@@ -10,12 +10,12 @@ const resolvers = {
         getAllTracks : async () => {
             return await Track.find()
         },
-        getUserTracks : async () =>{
-            return await Track.find()
+        getUser : async () =>{
+            return await Track.findById(id)
         }
     },
-    Mutation: {
-        addUser: async (parent, args, context) => {
+    /* Mutation: {
+        addUser: async (parent, args, context , info) => {
             const user = new User({args})
             await user.save()
             return user
@@ -29,8 +29,8 @@ const resolvers = {
             await Track.findByIdAndDelete(args)
             await save()
             return Track
-        }
-    }
+     }
+    }*/
 }
 
 module.exports  = resolvers

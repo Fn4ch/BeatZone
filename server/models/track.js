@@ -2,7 +2,7 @@ const {Schema,model} = require('mongoose')
 
 const Track = new Schema({
     title : { type: String, unique: false, required: true},
-    author : { type: ObjectId, ref:"user", required: true},
+    author : { type: String, ref:"user", required: true},
     description : { type: String, required: true},
     tags : { type: String, required: true},
     audio : { type: String, required: true},    

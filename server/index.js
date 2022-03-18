@@ -2,10 +2,10 @@ const {ApolloServer} = require('apollo-server-express')
 const typeDefs = require('./Schema/typeDefs')
 const mongoose = require('mongoose')
 const resolvers = require('./Schema/resolvers')
+const express = require('express')
 
 async function startServer(){
-
-    const app = require('express')
+    const app = express();
 
     const apolloServer = new ApolloServer({
         typeDefs,
@@ -14,9 +14,9 @@ async function startServer(){
        
     await apolloServer.start()
 
-    apolloServer.applyMiddleware({app : app})
+    apolloServer.applyMiddleware({app})
 
-    await mongoose.connect('mongodb+srv://user:user123@cluster0.o2nty.mongodb.net/kopat?retryWrites=true&w=majority',{
+    await mongoose.connect('mongodb+srv://user:user123@cluster0.o2nty.mongodb.net/kopat?retryWrites=true&w=majority',{                         
         useUnifiedTopology : true,
         useNewUrlParser : true
     })
@@ -24,4 +24,4 @@ async function startServer(){
     
     app.listen( {port:5000}, ()=> console.log("server started on 5000 port"))
 }
- startServer()
+startServer()

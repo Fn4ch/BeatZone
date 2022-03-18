@@ -11,7 +11,9 @@
   "author": "Fnach",
   "license": "ISC",
   "dependencies": {
+    "apollo-graphql": "^0.9.5",
     "apollo-server-express": "^3.5.0",
+    "babel": "^6.23.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "graphql": "^16.0.1",

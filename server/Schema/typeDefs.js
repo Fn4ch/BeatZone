@@ -3,7 +3,7 @@ const { gql } = require('apollo-server-express')
 const typeDefs = gql`
     #Types
     type User{
-        Id: ID        
+        id: ID!     
         username: String!
         password: String!
         playlist : [Playlist]
@@ -12,47 +12,34 @@ const typeDefs = gql`
 
 
     type Role {
-        Id: ID
+        id : ID!
         value: String!
     }
 
     type Track {
-        Id : ID
+        id : ID!
         title : String!
         author : ID!
         description : String!
         tags : String!
         audio : String!
-        duration: double
+        duration: Float
         comment : String
     }
     
     type Playlist {
-        Id : ID
+        id : ID!
         title : String!
-        Track : [Track]
+        Track : [Track!]!
     }
 
     #Queries
     type Query{ 
-        getAllUsers: [User!]!
+        getAllUsers : [User!]!
         
         getAllTracks : [Track!]!
 
-        getUser($id: ID!) : [User]
-
-        getUserTracks(author : $author) : User {
-            Id
-        }
-    }
-
-    #Mutations
-    type Mutation{
-        addUser(role: String, username: String, password: String): User!    
-        
-        addTrack(title: String, author: ID, description: String, tag: String, audio: String, image: String) : Track!
-
-        deleteTrack(id : ID)
+        getUser(id : ID!) : User!
     }
 
 `
