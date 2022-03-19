@@ -1,8 +1,9 @@
-const {Schema, model} = require('mongoose')
+const {Schema,model} = require('mongoose')
 
-const Role = new Schema({
+const Playlist = new Schema({
     title : {type : String},
-    track : { type : [String], ref:'Track' }
+    track : { type : [String], ref:'Track' },
+    author : {type: [String], ref:'Role'}
 })
-const role = mongoose.model('Playlist', Playlist)
-module.exports = role
+const playlist = model('Playlist', Playlist)
+module.exports = playlist

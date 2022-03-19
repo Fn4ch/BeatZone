@@ -21,7 +21,7 @@ const typeDefs = gql`
         title : String!
         author : ID!
         description : String!
-        tags : String!
+        tags : String
         audio : String!
         duration: Float
         comment : String
@@ -31,6 +31,7 @@ const typeDefs = gql`
         id : ID!
         title : String!
         Track : [Track!]!
+        author : ID!
     }
 
     #Queries
@@ -40,6 +41,17 @@ const typeDefs = gql`
         getAllTracks : [Track!]!
 
         getUser(id : ID!) : User!
+    }
+
+    #Mutations
+    type Mutation{
+        addUser(username: String, password: String) : User
+
+        addTrack(title: String, author: String, decription: String!, audio: String) : Track
+
+        deleteTrack(ID: String): Track
+
+        addPlaylist(title : String, Track: String, author: String): Playlist
     }
 
 `
