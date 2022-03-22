@@ -23,9 +23,9 @@ export default function Index() {
       <ThemeProvider theme={myTheme}>
         <Container maxWidth="sm" color='primary'>
           <NavBar position='fixed'/>
-            <Box sx={{ my: 10}} position='center' >
+            <Box sx={{ my: 10}} position='center'>
               <Typography sx={{mt:15, ml:1}} align="left" variant='h1'>Место для</Typography>
-                <Container maxWidth="200" color="#ffffff">
+                <Container maxWidth="1280" color="#ffffff">
                   <TextField 
                         sx={{my: 3, md: 10}}
                         variant="standard"

@@ -1,25 +1,25 @@
-const { gql } = require('apollo-server-express')
+import { gql, AuthenticationError, ApolloServer } from 'apollo-server-express'
+import jwt from 'jsonwebtoken'
+import guid from 'guid'
+import registerInput from './users'
 
 const typeDefs = gql`
-    #Types
+    #Types 
     type User{
-        id: ID!     
+        email: String!
         username: String!
         password: String!
         playlist : [Playlist]
         role: [Role]
     } 
 
-
     type Role {
-        id : ID!
         value: String!
     }
 
     type Track {
-        id : ID!
         title : String!
-        author : ID!
+        author : String!
         description : String!
         tags : String
         audio : String!
@@ -28,24 +28,38 @@ const typeDefs = gql`
     }
     
     type Playlist {
-        id : ID!
         title : String!
         Track : [Track!]!
-        author : ID!
+        author : String!
     }
 
     #Queries
     type Query{ 
+        todos : [String!]
+                
         getAllUsers : [User!]!
         
         getAllTracks : [Track!]!
 
-        getUser(id : ID!) : User!
+        getUser(id : ID!) : User
+    }
+    #Inputs
+    input RegisterInput{
+        username: String
+        password: String
+        email : String
+    }
+    
+    input LoginInput{
+        email: String
+        password: String
     }
 
     #Mutations
     type Mutation{
-        addUser(username: String, password: String) : User
+        registerUser(registerInput: RegisterInput) : User
+
+        loginUser(loginInput: LoginInput) : User
 
         addTrack(title: String, author: String, decription: String!, audio: String) : Track
 
