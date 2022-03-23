@@ -8,7 +8,7 @@ import Link from '../src/Link';
 import Copyright from '../src/Copyright'
 import NavBar from '../components/NavBar'
 import Footer from '../components/Footer'
-import myTheme from '../components/myTheme'
+import theme from '../src/theme'
 import { ThemeProvider } from '@mui/material'
 import { TextField, InputAdornment} from '@mui/material'
 import { Search } from '@mui/icons-material'
@@ -20,9 +20,9 @@ export default function Index() {
 
   return (
     <>
-      <ThemeProvider theme={myTheme}>
+      <ThemeProvider theme={theme}>
         <Container maxWidth="sm" color='primary'>
-          <NavBar position='fixed'/>
+          <NavBar />
             <Box sx={{ my: 10}} position='center'>
               <Typography sx={{mt:15, ml:1}} align="left" variant='h1'>Место для</Typography>
                 <Container maxWidth="1280" color="#ffffff">

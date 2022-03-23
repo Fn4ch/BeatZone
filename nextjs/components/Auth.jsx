@@ -1,11 +1,10 @@
 import {useState} from 'react'
-import { Grid, TextField, Typography, Button, Container} from '@mui/material'
-import { createTheme} from '@mui/material'
+import { Grid, TextField, Typography, Button, Container, Box} from '@mui/material'
 import Paper from '@mui/material/Paper'
 import { experimentalStyled as styled } from '@mui/material/styles'
 
 const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  backgroundColor: theme.palette.mode === 'dark' ? '#babdbe' : '#333333',
   ...theme.typography.body2,
   padding: theme.spacing(2),
   textAlign: 'center',
@@ -23,23 +22,6 @@ function Auth(){
         console.log(form)
       }
 
-       const theme = createTheme({
-    palette: {
-      primary: {
-        light: '#ffffff',
-        main: '#eceff1',
-        dark: '#babdbe',
-        contrastText: '#000000',
-      },
-      secondary: {
-        light: '#4f5b62',
-        main: '#263238',
-        dark: '#000a12',
-        contrastText: '#ffffff',
-      },
-    },
-  });
-
   const loginHandler = () =>{
 
   }
@@ -48,7 +30,8 @@ function Auth(){
   }
 
 return(
-        <> <Container maxWidth="sm">
+        <> 
+        <Container maxWidth="sm">
             <Grid fixed>
             <Item>
             <Typography color='primary' variant="h2">Авторизация</Typography>
@@ -61,7 +44,9 @@ return(
               <TextField onChange={changeHandler} id="filled-search" variant='outlined' label='Пароль' size='small' fullWidth='100'>
               </TextField>
             </Item>
-            <Button onClick={loginHandler} color='secondary'>Войти</Button>
+              <Box sx={{my:2}}>
+                <Button sx={{justifySelf:'center'}} variant="outlined" onClick={loginHandler} color='secondary'>Войти</Button>
+              </Box>
           </Grid>
                
           <Grid fixed>
@@ -76,7 +61,9 @@ return(
               <TextField onChange={changeHandler} id="filled-search" variant='outlined' label='Пароль' size='small' fullWidth='100'>
               </TextField>
             </Item>
-            <Button onClick={registerHandler} color='secondary'>Зарегистрироваться</Button>
+              <Box  >
+                <Button variant="outlined" sx={{my:2}} onClick={registerHandler} color='secondary'>Зарегистрироваться</Button>
+              </Box>
           </Grid>
           </Container>
         </>
