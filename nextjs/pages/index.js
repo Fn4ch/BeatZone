@@ -13,36 +13,42 @@ import { ThemeProvider } from '@mui/material'
 import { TextField, InputAdornment} from '@mui/material'
 import { Search } from '@mui/icons-material'
 import grey from '@mui/material/colors'
+import back from '../src/back.jpg'
 
 
 export default function Index() {  
-
-
+  
+  const lazyRoot = React.useRef(null)
   return (
     <>
       <ThemeProvider theme={theme}>
-        <Container maxWidth="sm" color='primary'>
-          <NavBar />
-            <Box sx={{ my: 10}} position='center'>
+          <NavBar/>
+        <Container maxWidth="lg" color='primary' position='center'>
+              <img
+                lazyRoot={lazyRoot}
+                src={back}
+                alt="Picture of the author"
+                width={800}
+                height={500}
+              />
               <Typography sx={{mt:15, ml:1}} align="left" variant='h1'>Место для</Typography>
-                <Container maxWidth="1280" color="#ffffff">
+                <Box sx={{mx:"auto"}} maxWidth="sm">
                   <TextField 
-                        sx={{my: 3, md: 10}}
-                        variant="standard"
-                        id="seach_field"
-                        label="Search"
-                        color="secondary"
-                        fullWidth="true"
-                        InputProps={{
-                          startAdornment: (
+                      sx={{my: 3, md: 10}}
+                      variant="standard"
+                      id="seach_field"
+                      label="Search"
+                      color="secondary"
+                      fullWidth="true"
+                      InputProps={{
+                        startAdornment: (
                             <InputAdornment position="start">
                               <Search/>
                             </InputAdornment>
-                          ),}}
+                        ),}}
                   />
-                </Container>
+                </Box>
               <Typography align="right" sx={{mr:1}} variant='h1'>Музыки</Typography>
-            </Box>
           <Copyright />
           <Footer/>
         </Container>

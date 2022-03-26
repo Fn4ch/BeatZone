@@ -1,19 +1,18 @@
 import * as React from 'react';
-import {Box, Container} from '@mui/material'
-import Auth from '../components/Auth'
+import LoginIn from '../components/Authorize';
 import { ThemeProvider } from '@mui/material'
 import theme from '../src/theme'
-import NavBar from '../components/NavBar';
+import NavBar from '../components/NavBar'
 
-const AuthReg = () => {
+const Auth = () => {
   return (
     <>
       <ThemeProvider theme={theme}>
         <NavBar/>
-        <Auth/>
+        <LoginIn/>
       </ThemeProvider>
     </>
   )
 }
 
-export default AuthReg
+export default Auth
