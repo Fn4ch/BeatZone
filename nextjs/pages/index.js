@@ -14,19 +14,18 @@ import { TextField, InputAdornment} from '@mui/material'
 import { Search } from '@mui/icons-material'
 import grey from '@mui/material/colors'
 import back from '../src/back.jpg'
+import Player from '../components/player'
 
 
 export default function Index() {  
   
-  const lazyRoot = React.useRef(null)
   return (
     <>
       <ThemeProvider theme={theme}>
           <NavBar/>
-        <Container maxWidth="lg" color='primary' position='center'>
+        <Container maxWidth="lg" sx={{borderRight:'5px, solid, #fff842', borderLeft:'5px, solid, #fff842'}} position='center'>
               <img
-                lazyRoot={lazyRoot}
-                src={back}
+                src="/src/back.jpg"
                 alt="Picture of the author"
                 width={800}
                 height={500}
@@ -50,8 +49,9 @@ export default function Index() {
                 </Box>
               <Typography align="right" sx={{mr:1}} variant='h1'>Музыки</Typography>
           <Copyright />
-          <Footer/>
+          <Footer/>          
         </Container>
+        <Player/>
       </ThemeProvider>
     </>
   )

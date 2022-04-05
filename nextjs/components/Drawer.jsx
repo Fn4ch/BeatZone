@@ -1,7 +1,7 @@
 import { Menu } from '@mui/icons-material'
 import { SwipeableDrawer, List, ListItem, ListItemText, Box, Divider, Switch, FormControlLabel} from '@mui/material'
-import React, { useState } from 'react'
-
+import { useState } from 'react'
+import Image from 'next'
 
 export default function MenuDrawer(){
 

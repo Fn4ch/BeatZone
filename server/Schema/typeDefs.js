@@ -1,7 +1,4 @@
-import { gql, AuthenticationError, ApolloServer } from 'apollo-server-express'
-import jwt from 'jsonwebtoken'
-import guid from 'guid'
-import registerInput from './users'
+const { gql, AuthenticationError, ApolloServer } = require('apollo-server-express')
 
 const typeDefs = gql`
     #Types 
@@ -42,9 +39,11 @@ const typeDefs = gql`
         getAllTracks : [Track!]!
 
         getUser(id : ID!) : User
+
+        getUserTracks(author: ID) : Track
     }
     #Inputs
-    input RegisterInput{
+    input createUserInput{
         username: String
         password: String
         email : String
@@ -57,7 +56,7 @@ const typeDefs = gql`
 
     #Mutations
     type Mutation{
-        registerUser(registerInput: RegisterInput) : User
+        createUser(createUserInput: createUserInput) : User
 
         loginUser(loginInput: LoginInput) : User
 

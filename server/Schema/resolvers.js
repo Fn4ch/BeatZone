@@ -1,10 +1,10 @@
-import mongoose  from 'mongoose'
-import User  from '../models/user'
-import Track  from '../models/track'
-import Playlist  from '../models/playlist'
-import { ApolloError } from 'apollo-server-express'
-import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
+const mongoose  = require('mongoose')
+const User  = require('../models/user')
+const Track  = require('../models/track')
+const Playlist  = require('../models/playlist')
+const { ApolloError } = require('apollo-server-express')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 const resolvers = {
     Query: {
@@ -18,6 +18,9 @@ const resolvers = {
             return await Track.find()
         },
         getUser : async (_, ID) =>{
+            return await Track.findById(ID)
+        },
+        getUserTracks : async (_, ID) =>{
             return await Track.findById(ID)
         }
     },
@@ -37,7 +40,7 @@ const resolvers = {
                 passwrod: encryptedPassword
             })
 
-            const token = jwt.sign({user_id: newUser._id,email}, "UNSAFE_STRING", {expiresIn: "4h"})
+            const token = jwt.sign({user_id: newUser._id,email}, "UNSAFE_STRING", {expiresIn: "24h"})
 
             newUser.token = token
 
@@ -51,7 +54,7 @@ const resolvers = {
             const user = await User.findOne({email})
 
             if(user && (await bcrypt.compare(password, user.password))){
-                const token = jwt.sign({user_id: newUser._id,email}, "UNSAFE_STRING", {expiresIn: "4h"})
+                const token = jwt.sign({user_id: newUser._id,email}, "UNSAFE_STRING", {expiresIn: "24h"})
                 user.token = token
                 return{
                 id: user.id,

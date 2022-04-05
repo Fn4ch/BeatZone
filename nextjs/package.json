@@ -10,16 +10,21 @@
     "post-update": "echo \"codesandbox preview only, need an update\" && yarn upgrade --latest"
   },
   "dependencies": {
+    "@apollo/client": "^3.5.10",
     "@emotion/cache": "latest",
     "@emotion/react": "latest",
     "@emotion/server": "latest",
     "@emotion/styled": "latest",
     "@mui/icons-material": "latest",
     "@mui/material": "latest",
+    "deepmerge": "^4.2.2",
+    "graphql": "^16.3.0",
+    "lodash": "^4.17.21",
     "next": "^12.1.0",
     "prop-types": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "react-dropzone": "^12.0.4"
   },
   "devDependencies": {
     "eslint": "latest",

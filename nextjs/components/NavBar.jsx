@@ -1,18 +1,23 @@
 import { Box, InputAdornment, TextField, ThemeProvider, Typography, IconButton, Badge} from '@mui/material'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
-import { Search }  from '@mui/icons-material'
+import { Search, UploadFile }  from '@mui/icons-material'
 import { Notifications}  from '@mui/icons-material'
 import MenuDrawer from './Drawer'
 import AccountMenu from './AccountMenu'
+import Link from '../src/Link'
+import Upload from '../components/Upload'
 
 
 export default function NavBar(){
 
+
   return(
       <AppBar position="fixed" color='primary'>
-          <Toolbar>
-                <Typography variant="h4">BeatZone</Typography> 
+          <Toolbar sx={{display: 'flex', alignItems:'center'}}>
+            <Link href="/">
+                <Typography variant="h4" color="secondary">BeatZone</Typography>
+            </Link>
                 <Box color='secondary'>
                   <TextField
                     sx={{mx:3}}
@@ -29,13 +34,15 @@ export default function NavBar(){
                   />
                 </Box>
                 <Box sx={{flexGrow: 1}}/>
-                <Box sx={{display:{xs:'none', md:'flex', mr: 20}}}>
+                <Box sx={{display:{xs:'none', md:'flex', mr: 3}}}>
                   <IconButton >
                       <Badge badgeContent={4} color='secondary'>
                         <Notifications fontSize='large' color='secondary' />
                       </Badge>
-                    </IconButton>
-                <AccountMenu/>
+                  </IconButton>
+
+                  <Upload/>            
+
                   <IconButton >
                     <MenuDrawer />
                   </IconButton>
