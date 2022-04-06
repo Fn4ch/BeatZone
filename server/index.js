@@ -3,14 +3,17 @@ const mongoose = require('mongoose')
 const resolvers = require('./Schema/resolvers')
 const typeDefs = require('./Schema/typeDefs')
 const express = require('express')
+const cors = require('cors')
 
 async function startServer(){
-    const app = express();
+    const app = express()
+
+    app.use(cors)
 
     const apolloServer = new ApolloServer({
         typeDefs,
         resolvers,
-    })
+    })    
        
     await apolloServer.start()
 

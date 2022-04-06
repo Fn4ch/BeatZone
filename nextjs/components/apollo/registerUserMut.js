@@ -19,7 +19,5 @@ import {Box, Button, FormControl} from '@mui/material'
     if(loading) return 'Submitting...'
     if(error) return `'Submition error!' ${error.message}`
 
-    registerUser()
-
 }
 export default RegisterUser

@@ -25,7 +25,7 @@ const resolvers = {
         }
     },
     Mutation: {
-        registerUser: async (_,{registerInput: {username, password, email}}) =>
+        createUser: async (_,{createUserInput: {username, password, email}}) =>
         {
             const oldUser = await User.findOne({email})
 

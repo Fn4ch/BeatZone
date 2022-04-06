@@ -1,6 +1,10 @@
-import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Box} from '@mui/material'
-import { useState } from 'react'
+import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Box, Input, List, ListItem} from '@mui/material'
+import { useState, useCallback } from 'react'
 import { UploadFile } from '@mui/icons-material'
+import { useDropzone } from 'react-dropzone'
+import Dropzone from 'react-dropzone'
+
+
 
 const Upload = () =>{
 
@@ -25,31 +29,40 @@ const Upload = () =>{
         e.preventDefault()
         setDrag(false)
     }
-    
-    const onDrop = (e) => {
-        e.preventDefault()
-        let files = [...e.dataTranfer.files]
-        document.getElementById[files]
-        console.log(files)
-    } 
+
+    const onDrop = useCallback(acceptedFiles => {
+        event.preventDefault()
+        let files = [...event.dataTranfer.files]
+        document.getElementById[acceptedFiles]
+        console.log(acceptedFiles)
+      }, [])
       
+    const {getRootProps, getInputProps, acceptedFiles} = useDropzone({onDrop})
+    
+    const files = acceptedFiles.map(file => <Typography key={file.path} >{file.path}</Typography>)
 
     return(
-        <>
+        <>            
             <IconButton onClick={handleClickOpen}><UploadFile fontSize='large' color='secondary' /></IconButton>
             <Dialog
                 fullWidth='lg'
                 maxWidth='lg'
                 open={open}
                 onClose={handleClickClose}
-                onMouseDown={handleClickClose}
-            >
+            >                
                 <DialogTitle sx={{mx:'auto'}}>Upload files</DialogTitle>
-                <DialogContent sx={{width:'lg', height:'500px', display:'flex', alignContent:'center', alignItems: 'center', justifyContent:'center'}}>
-                    {drag ? <Typography variant='h4' sx={{display:'flex', my:'auto'}}>Перетащите файл для загрузки</Typography> : 
-                    <div onDragStart={e => dragStart(e)} onDragLeave={dragLeave} onDragOver={e => dragStart(e)} onDrop={e => onDrop(e)}>
-                        <Typography variant='h4' sx={{display:'flex', my:'auto'}}>Отпустите файлы для загрузки</Typography></div>}               
+                <DialogContent sx={{width:'lg', height:'500px', display:'flex', alignContent:'center', alignItems: 'center', justifyContent:'center', flexDirection:'column'}}>
+                    <div {...getRootProps()}>
+                        <input {...getInputProps()}/>
+                        <Typography>Перенесите файлы или нажмите чтобы открыть</Typography>
+                    </div>                      
                 </DialogContent>
+                    <Box sx={{mb:'5', display:'flex' , justifyContent:'center', alignItems:'center', alignContent:'center'}}>
+                        <Typography variant="h4" ></Typography>
+                        <List>
+                            <ListItem>{files}</ListItem>
+                        </List>
+                    </Box>   
             </Dialog>
         </>
     )

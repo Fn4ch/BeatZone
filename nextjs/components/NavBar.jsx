@@ -13,12 +13,12 @@ export default function NavBar(){
 
 
   return(
-      <AppBar position="fixed" color='primary'>
+      <AppBar position="fixed" color='transparent'>
           <Toolbar sx={{display: 'flex', alignItems:'center'}}>
             <Link href="/">
                 <Typography variant="h4" color="secondary">BeatZone</Typography>
             </Link>
-                <Box color='secondary'>
+                <Box >
                   <TextField
                     sx={{mx:3}}
                     variant='outlined'
