@@ -1,8 +1,8 @@
-import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Box, Input, List, ListItem} from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Box, Input, List, ListItem, Button} from '@mui/material'
 import { useState, useCallback } from 'react'
 import { UploadFile } from '@mui/icons-material'
 import { useDropzone } from 'react-dropzone'
-import Dropzone from 'react-dropzone'
+import { gql, useMutation } from '@apollo/client'
 
 
 
@@ -30,9 +30,8 @@ const Upload = () =>{
         setDrag(false)
     }
 
-    const onDrop = useCallback(acceptedFiles => {
-        event.preventDefault()
-        let files = [...event.dataTranfer.files]
+    const onDrop = (e) => useCallback(acceptedFiles => {
+        let uploadedFiles = [...e.dataTranfer.uploadedFiles]
         document.getElementById[acceptedFiles]
         console.log(acceptedFiles)
       }, [])
@@ -40,6 +39,22 @@ const Upload = () =>{
     const {getRootProps, getInputProps, acceptedFiles} = useDropzone({onDrop})
     
     const files = acceptedFiles.map(file => <Typography key={file.path} >{file.path}</Typography>)
+
+    const addTrackMutation = gql`
+        mutation addTrack($input: addTrackInput){
+        addTrack(input: $input){
+            name
+        }
+    }`
+
+    const [addTrack, {data, loading, error}] = useMutation(addTrackMutation)
+
+    if(loading) return 'Submitting...'
+    if(error) return `'Submition error!' ${error.message}`
+
+    const uploadHandler = () =>{
+
+    }
 
     return(
         <>            
@@ -57,12 +72,14 @@ const Upload = () =>{
                         <Typography>Перенесите файлы или нажмите чтобы открыть</Typography>
                     </div>                      
                 </DialogContent>
+                    <Box flexGrow="1"></Box>
                     <Box sx={{mb:'5', display:'flex' , justifyContent:'center', alignItems:'center', alignContent:'center'}}>
                         <Typography variant="h4" ></Typography>
                         <List>
                             <ListItem>{files}</ListItem>
                         </List>
-                    </Box>   
+                    </Box>
+                    <Button onClick={uploadHandler}>Загрузить</Button>   
             </Dialog>
         </>
     )

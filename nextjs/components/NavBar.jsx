@@ -35,11 +35,6 @@ export default function NavBar(){
                 </Box>
                 <Box sx={{flexGrow: 1}}/>
                 <Box sx={{display:{xs:'none', md:'flex', mr: 3}}}>
-                  <IconButton >
-                      <Badge badgeContent={4} color='secondary'>
-                        <Notifications fontSize='large' color='secondary' />
-                      </Badge>
-                  </IconButton>
 
                   <Upload/>            
 

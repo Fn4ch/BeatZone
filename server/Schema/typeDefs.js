@@ -32,15 +32,14 @@ const typeDefs = gql`
 
     #Queries
     type Query{ 
-        todos : [String!]
-                
+
         getAllUsers : [User!]!
         
         getAllTracks : [Track!]!
 
         getUser(id : ID!) : User
 
-        getUserTracks(author: ID) : Track
+        getUserTracks(author: ID!) : [Track!]!
     }
     #Inputs
     input createUserInput{
@@ -49,18 +48,26 @@ const typeDefs = gql`
         email : String
     }
     
-    input LoginInput{
+    input loginInput{
         email: String
         password: String
     }
 
+    input addTrackInput{
+        title: String!
+        author : ID
+        description: String
+        audio: String
+        image: String
+    }
+
     #Mutations
     type Mutation{
-        createUser(createUserInput: createUserInput) : User
+        createUser(createUserInput: createUserInput) : String
 
-        loginUser(loginInput: LoginInput) : User
+        loginUser(loginInput: loginInput) : String
 
-        addTrack(title: String, author: String, decription: String!, audio: String) : Track
+        addTrack(addTrackInput: addTrackInput) : Track
 
         deleteTrack(ID: String): Track
 

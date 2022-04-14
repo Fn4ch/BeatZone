@@ -1,5 +1,5 @@
 import { Menu } from '@mui/icons-material'
-import { SwipeableDrawer, List, ListItem, ListItemText, Box, Divider, Switch, FormControlLabel} from '@mui/material'
+import { SwipeableDrawer, List, ListItem, ListItemText, Box, Divider, Switch, FormControlLabel, Stack, Avatar, Typography} from '@mui/material'
 import { useState } from 'react'
 import Image from 'next'
 
@@ -7,6 +7,9 @@ export default function MenuDrawer(){
 
 
     const [open, setOpen] = useState(false)
+
+    let avatar
+    let username = 'user'
     
     return(
         <>
@@ -26,6 +29,12 @@ export default function MenuDrawer(){
                     color={"primary.light"}
                 />
                 <List width='auto' sx={{mx:3}}>
+                    <ListItem>
+                        <Stack direction="row" spacing={2} alignItems='center'>
+                            <Avatar alt={{avatar}} src=""></Avatar>
+                            <Typography variant='h5'>{username}</Typography>
+                        </Stack>
+                    </ListItem>
                     <ListItem button onClick={() =>{}}>
                         <ListItemText primary={'Трэки'}/>
                     </ListItem>
@@ -35,7 +44,7 @@ export default function MenuDrawer(){
                     <ListItem  button onClick={() =>{}}>
                         <ListItemText primary={'Настройки'}/>
                     </ListItem>
-                    <ListItem button onClick={() =>{}}>
+                    <ListItem >
                       <FormControlLabel labelPlacement="right" label="Тема" control={<Switch/>}/>
                     </ListItem>
                 </List>

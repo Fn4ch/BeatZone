@@ -5,8 +5,7 @@ const User = new Schema({
     username: {type: String },
     password: {type: String },
     likedTracks: {type: [String], default: []},
-    role: {type: [String], ref:'Role'},
-    token: {type : String}
+    role: {type: [String], ref:'Role'}
 })
 const user = model('User', User) 
 module.exports = user

@@ -2,26 +2,27 @@ const mongoose  = require('mongoose')
 const User  = require('../models/user')
 const Track  = require('../models/track')
 const Playlist  = require('../models/playlist')
-const { ApolloError } = require('apollo-server-express')
+const { ApolloError, AuthenticationError } = require('apollo-server-express')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const user = require('../models/user')
+
+
+const JWT_SECRET = process.env.JWT_SECRET || "secret"
 
 const resolvers = {
     Query: {
-        todos: async() => {
-            return await []
-        },
-        getAllUsers: async () => {        
+        getAllUsers: async (_, _args, context) => {        
             return await User.find()            
         },
-        getAllTracks : async () => {
+        getAllTracks : async (_, _args, context) => {
             return await Track.find()
         },
-        getUser : async (_, ID) =>{
+        getUser : async (_, ID, context) =>{
             return await Track.findById(ID)
         },
-        getUserTracks : async (_, ID) =>{
-            return await Track.findById(ID)
+        getUserTracks : async (_, author, context) =>{
+            return await Track.findById(author)
         }
     },
     Mutation: {
@@ -31,40 +32,23 @@ const resolvers = {
 
             if(oldUser)
             throw new ApolloError('Пользователь с таким email уже зарегистрирован:' + email,'USER_ALREADY_EXISTS')
-
-            let encryptedPassword = await bcrypt.hash(password, 10)
-
+            else{
             const newUser = new User({
-                username: username,
-                email: email.toLowercase(),
-                passwrod: encryptedPassword
+                email,
+                username,
+                password
             })
-
-            const token = jwt.sign({user_id: newUser._id,email}, "UNSAFE_STRING", {expiresIn: "24h"})
-
-            newUser.token = token
-
-            const res = await newUser.save()
-            return{
-                id: res.id,
-                ...res._doc
-            }        
+            await newUser.save()
+            return jwt.sign({email}, JWT_SECRET, {expiresIn: "4h"})   
+            }           
+            
         },
         loginUser: async (parent, {loginInput:{email, password}}) =>{
-            const user = await User.findOne({email})
-
-            if(user && (await bcrypt.compare(password, user.password))){
-                const token = jwt.sign({user_id: newUser._id,email}, "UNSAFE_STRING", {expiresIn: "24h"})
-                user.token = token
-                return{
-                id: user.id,
-                ...user._doc
-                }
+            if(User[email] && User[email].password === password){
+                return jwt.sign({data: email}, JWT_SECRET, {expiresIn: "4h"})
             }
-            else{
-                throw new ApolloError('Неправильный пароль', 'INCORRECET_PASSWORD')
-            }
-
+                else
+                throw new AuthenticationError('Некорректные данные для входа ')
         },
         addTrack : async (parent, args, context, ifo) => {
             const track = new Track({args})
@@ -80,7 +64,7 @@ const resolvers = {
             const playlist = new playlist({args})
             await save()
             return Playlist
-        }
+        },
     }
 }
 
