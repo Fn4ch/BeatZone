@@ -5,22 +5,33 @@ const Playlist  = require('../models/playlist')
 const { ApolloError, AuthenticationError } = require('apollo-server-express')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const user = require('../models/user')
 
 
 const JWT_SECRET = process.env.JWT_SECRET || "secret"
 
+
 const resolvers = {
     Query: {
-        getAllUsers: async (_, _args, context) => {        
-            return await User.find()            
+        getAllUsers: async (_, _args, context) => { 
+            const email = context.email
+            const user = await User.findOne({email}) 
+        if(user == null)
+        {
+            throw new AuthenticationError('Некорректные данные')
+        }
+        else{
+                return await User.find()
+            }            
         },
+
         getAllTracks : async (_, _args, context) => {
             return await Track.find()
         },
+
         getUser : async (_, ID, context) =>{
-            return await Track.findById(ID)
+            return await Track.findById({_id: ID})
         },
+
         getUserTracks : async (_, author, context) =>{
             return await Track.findById(author)
         }
@@ -33,24 +44,31 @@ const resolvers = {
             if(oldUser)
             throw new ApolloError('Пользователь с таким email уже зарегистрирован:' + email,'USER_ALREADY_EXISTS')
             else{
+                email = email.toLowerCase()
             const newUser = new User({
                 email,
                 username,
                 password
             })
             await newUser.save()
-            return jwt.sign({email}, JWT_SECRET, {expiresIn: "4h"})   
+            return jwt.sign({data: email}, JWT_SECRET, {expiresIn: "4h"})   
             }           
             
         },
-        loginUser: async (parent, {loginInput:{email, password}}) =>{
-            if(User[email] && User[email].password === password){
-                return jwt.sign({data: email}, JWT_SECRET, {expiresIn: "4h"})
+        loginUser: async (parent, {loginInput:{email, password}}) =>{    
+            
+            const user = await User.findOne({email})
+            if(!user)
+            throw new ApolloError(`Пользователя с почтой ${email} не существует`)
+            else{                    
+                if(user.password === password && user.email === email){
+                    return jwt.sign({data: email}, JWT_SECRET, {expiresIn: "4h"})
+                }
+                    else
+                    throw new AuthenticationError('Некорректные данные для входа')
             }
-                else
-                throw new AuthenticationError('Некорректные данные для входа ')
         },
-        addTrack : async (parent, args, context, ifo) => {
+        addTrack : async (parent, args, context) => {
             const track = new Track({args})
             await track.save()
             return track

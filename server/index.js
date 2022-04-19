@@ -4,6 +4,7 @@ const resolvers = require('./Schema/resolvers')
 const typeDefs = require('./Schema/typeDefs')
 const express = require('express')
 const cors = require('cors')
+const jwt = require('jsonwebtoken')
 
 const JWT_SECRET = process.env.JWT_SECRET || "secret"
 
@@ -15,21 +16,21 @@ async function startServer(){
     const apolloServer = new ApolloServer({
         typeDefs,
         resolvers,
-       /* context: ({req}) =>{
-            const ctx = email        
+        context: ({req}) =>{ 
+            const ctx = email = {email: null}
             try{
-                if(req.headers["x-acces-token"])
+                if(req.headers["x-access-token"] )
                 {
                     const token = jwt.verify(
-                        req.headers["x-acces-token"],
+                        req.headers["x-access-token"],
                         JWT_SECRET
                     )
-                }
-                ctx.email = token.data
+                    ctx.email = token.data
+                }                
             }
             catch (e) {} 
-            return ctx            
-         } */ 
+            return ctx     
+         } 
     })    
        
     await apolloServer.start()
