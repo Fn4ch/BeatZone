@@ -5,7 +5,7 @@ import Link from '../src/Link'
 import {useMutation, gql} from '@apollo/client'
 
 
- export default function SignUp(){ 
+ export default function Register(){ 
 
   const [values, setValues] = useState({
     showPassword : false
@@ -32,23 +32,23 @@ import {useMutation, gql} from '@apollo/client'
   const handleMouseDownPassword = (event) => {
   event.preventDefault()
   }
-  const createUserMutation = gql`
+  const CREATE_USER_MUTATION = gql`
     mutation createUser($input: createUserInput!) {
-    createUser(input: $input)
+    createUser(input: $input) 
     }`
 
 
-    const [createrUser] = useMutation(createUserMutation)
+    const [createUser] = useMutation(CREATE_USER_MUTATION)
 
-    const registerHandler = () => {
+    const registerHandler = async (e) => {
       e.preventDefault()
-      createrUser({variables:{input: {username, password, email }}})
+      createUser({variables:{input: {username, password, email }}})
     }
 
 
   return(
     <>
-        <Container maxWidth="lg" spacing={2} sx={{mt:10, display:'flex', justifyContent:'center',justifyItems:'center'}}>
+        <Container maxWidth="lg" spacing={2} sx={{mt:3, display:'flex', justifyContent:'center',justifyItems:'center'}}>
           <Box maxWidth="sm" width="xs" sx={{my:10}}>
             <Box sx={{my:5}} >
               <Typography color='light' variant="h2" align='center'>Регистрация</Typography>
@@ -62,8 +62,8 @@ import {useMutation, gql} from '@apollo/client'
                       onChange={ e => setEmail(e.target.value)}
                   />
             </FormControl>
-            <FormControl sx={{my:4}}  fullWidth={true} color='secondary'> 
-                  <InputLabel  >username</InputLabel>
+            <FormControl sx={{my:4}}  fullWidth="true" color='secondary'> 
+                  <InputLabel>username</InputLabel>
                   <FilledInput
                       id='username'
                       fullWidth="true"
@@ -95,14 +95,14 @@ import {useMutation, gql} from '@apollo/client'
                 />
               </FormControl>
 
-              <FormControl sx={{my:4}}  fullWidth={true} color='secondary'>
+              <FormControl sx={{my:4}}  fullWidth="true" color='secondary'>
                 <InputLabel>Повторите пароль</InputLabel>
                 <FilledInput
                   id="passwordRepeat"
                   type={values.showPassword ? 'text' : 'password'}
                   value={passwordRepeat}
                   onChange={ e => setPasswordRepeat(e.target.value)}
-                  fullWidth={true}                                    
+                  fullWidth="true"                                    
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton
@@ -119,7 +119,7 @@ import {useMutation, gql} from '@apollo/client'
                 />
               </FormControl>
               <Box sx={{my:5, mx:'auto'}} maxWidth="50%"> 
-                    <Button variant="outlined" fullWidth={true} onClick={(e) => registerHandler()} color='secondary'>Зарегистрироваться</Button>
+                    <Button variant="outlined" fullWidth="true" onClick={(e) => registerHandler(e)} color='secondary'>Зарегистрироваться</Button>
               </Box>
               <Box display="flex" alignContent="center">
                 <Typography  fontSize="24" color='secondary' sx={{ml:'auto', mr:3}}>Уже зарегистрированы?</Typography><Box sx={{mr:'auto'}}><Link href="/authorize"> Войти</Link></Box>

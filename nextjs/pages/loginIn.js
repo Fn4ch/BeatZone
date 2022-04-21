@@ -2,14 +2,15 @@ import * as React from 'react';
 import LoginIn from '../components/Authorize';
 import { ThemeProvider } from '@mui/material'
 import theme from '../src/theme'
-import NavBar from '../components/NavBar'
+import Layout from '../components/Layout'
 
 const Auth = () => {
   return (
     <>
       <ThemeProvider theme={theme}>
-        <NavBar/>
-        <LoginIn/>
+        <Layout>
+          <LoginIn/>
+        </Layout>
       </ThemeProvider>
     </>
   )

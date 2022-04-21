@@ -1,16 +1,17 @@
 import { ThemeProvider } from '@mui/material'
 import theme from '../src/theme'
-import NavBar from '../components/NavBar'
-import SignUp from '../components/SignUp'
+import Register from '../components/Register'
 import { ApolloProvider } from '@apollo/client/react/context'
+import Layout from '../components/Layout'
 
 const RegPage = () => {
     
     return(
         <ApolloProvider>
             <ThemeProvider theme={theme}>
-                <NavBar/>
-                <SignUp/>
+                <Layout>
+                    <Register/>
+                </Layout>
             </ThemeProvider>
         </ApolloProvider>
     )

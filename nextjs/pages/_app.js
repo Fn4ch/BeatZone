@@ -6,13 +6,33 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { CacheProvider } from '@emotion/react'
 import theme from '../src/theme'
 import createEmotionCache from '../src/createEmotionCache'
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
+import { ApolloClient, ApolloProvider, InMemoryCache , createHttpLink} from '@apollo/client'
+import { setContext } from '@apollo/client/link/context'
+
 const clientSideEmotionCache = createEmotionCache()
 
 export default function MyApp(props) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
-  const client = new ApolloClient({
-    uri: "http://localhost:5000/graphql",
+
+  const httpLink = createHttpLink({
+    uri: 'http://localhost:5000/graphql',
+  })
+
+  const authLink = setContext((_, { headers }) => {
+  // get the authentication token from local storage if it exists
+  const token = localStorage.getItem('token');
+  // return the headers to the context so httpLink can read them
+  console.log(token)
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+    }
+  }
+  })
+
+  const client = new ApolloClient({    
+    link: 'http://localhost:5000/graphql',
     cache: new InMemoryCache()
   })
 
