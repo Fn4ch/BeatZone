@@ -13,15 +13,15 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret"
 const resolvers = {
     Query: {
         getAllUsers: async (_, _args, context) => { 
-            const email = context.email
+           /* const email = context.email
             const user = await User.findOne({email}) 
         if(user == null)
         {
             throw new AuthenticationError('Некорректные данные')
         }
-        else{
+        else{*/
                 return await User.find()
-            }            
+            //}            
         },
 
         getAllTracks : async (_, _args, context) => {
@@ -37,7 +37,7 @@ const resolvers = {
         }
     },
     Mutation: {
-        createUser: async (_,{createUserInput: {username, password, email}}) =>
+        createUser: async (_,{username, password, email}) =>
         {
             const oldUser = await User.findOne({email})
 
@@ -55,7 +55,7 @@ const resolvers = {
             }           
             
         },
-        loginUser: async (parent, {loginInput:{email, password}}) =>{    
+        loginUser: async (parent, {password, email}) =>{    
             
             const user = await User.findOne({email})
             if(!user)

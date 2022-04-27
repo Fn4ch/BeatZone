@@ -3,9 +3,11 @@ import { TextField, Typography, Button, Container, Box, InputAdornment, IconButt
 import { VisibilityOff, Visibility } from '@mui/icons-material'
 import Link from '../src/Link'
 import {useMutation, gql} from '@apollo/client'
-
+import { useRouter } from 'next/router'
 
  export default function Register(){ 
+  
+  const router = useRouter()
 
   const [values, setValues] = useState({
     showPassword : false
@@ -16,7 +18,8 @@ import {useMutation, gql} from '@apollo/client'
   const [password, setPassword] = useState('')
   const [passwordRepeat, setPasswordRepeat] = useState('')
 
-        
+  
+
   const changeHandler = (prop) => (event) => {
     setValues({...values, [prop]: event.target.value})
     console.log(values)
@@ -33,17 +36,21 @@ import {useMutation, gql} from '@apollo/client'
   event.preventDefault()
   }
   const CREATE_USER_MUTATION = gql`
-    mutation createUser($input: createUserInput!) {
-    createUser(input: $input) 
-    }`
+    mutation createUser($username: String, $password: String, $email: String){
+      createUser(username: $username, password: $password, email: $email) 
+      }
+    `
 
 
-    const [createUser] = useMutation(CREATE_USER_MUTATION)
-
+    const [createUser, {error, loading, data}] = useMutation(CREATE_USER_MUTATION)
+    
     const registerHandler = async (e) => {
       e.preventDefault()
-      createUser({variables:{input: {username, password, email }}})
+      createUser({variables: {username, password, email}})
+      localStorage.setItem('token', data)
+      router.push('/')
     }
+  
 
 
   return(
@@ -54,31 +61,31 @@ import {useMutation, gql} from '@apollo/client'
               <Typography color='light' variant="h2" align='center'>Регистрация</Typography>
             </Box>
 
-            <FormControl sx={{my:4}}  fullWidth="true" color='secondary'> 
+            <FormControl sx={{my:4}}  fullWidth={true} color='secondary'> 
                   <InputLabel >Email</InputLabel>
                   <FilledInput
                       id='email'
-                      fullWidth="true"
+                      fullWidth={true}
                       onChange={ e => setEmail(e.target.value)}
                   />
             </FormControl>
-            <FormControl sx={{my:4}}  fullWidth="true" color='secondary'> 
+            <FormControl sx={{my:4}}  fullWidth={true} color='secondary'> 
                   <InputLabel>username</InputLabel>
                   <FilledInput
                       id='username'
-                      fullWidth="true"
+                      fullWidth={true}
                       onChange={ e => setUsername (e.target.value)}                      
                   />
             </FormControl>
 
-            <FormControl sx={{my:4}}  fullWidth="true" color='secondary'>
+            <FormControl sx={{my:4}}  fullWidth={true} color='secondary'>
                 <InputLabel >Пароль</InputLabel>
                 <FilledInput
                   id="password"
                   type={values.showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={ e => setPassword(e.target.value)}
-                  fullWidth="true"                
+                  fullWidth={true}               
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton
@@ -95,14 +102,14 @@ import {useMutation, gql} from '@apollo/client'
                 />
               </FormControl>
 
-              <FormControl sx={{my:4}}  fullWidth="true" color='secondary'>
+              <FormControl sx={{my:4}}  fullWidth={true} color='secondary'>
                 <InputLabel>Повторите пароль</InputLabel>
                 <FilledInput
                   id="passwordRepeat"
                   type={values.showPassword ? 'text' : 'password'}
                   value={passwordRepeat}
                   onChange={ e => setPasswordRepeat(e.target.value)}
-                  fullWidth="true"                                    
+                  fullWidth={true}                                  
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton
@@ -119,7 +126,7 @@ import {useMutation, gql} from '@apollo/client'
                 />
               </FormControl>
               <Box sx={{my:5, mx:'auto'}} maxWidth="50%"> 
-                    <Button variant="outlined" fullWidth="true" onClick={(e) => registerHandler(e)} color='secondary'>Зарегистрироваться</Button>
+                    <Button variant="outlined" fullWidth={true} onClick={(e) => registerHandler(e)} color='secondary'>Зарегистрироваться</Button>
               </Box>
               <Box display="flex" alignContent="center">
                 <Typography  fontSize="24" color='secondary' sx={{ml:'auto', mr:3}}>Уже зарегистрированы?</Typography><Box sx={{mr:'auto'}}><Link href="/authorize"> Войти</Link></Box>

@@ -33,7 +33,7 @@ const typeDefs = gql`
     #Queries
     type Query{ 
 
-        getAllUsers : [User!]!
+        getAllUsers : [User]
         
         getAllTracks : [Track!]!
 
@@ -63,9 +63,9 @@ const typeDefs = gql`
 
     #Mutations
     type Mutation{
-        createUser(createUserInput: createUserInput) : String
+        createUser(username: String, password: String, email: String) : String
 
-        loginUser(loginInput: loginInput) : String
+        loginUser(password: String, email: String) : String
 
         addTrack(addTrackInput: addTrackInput) : Track
 

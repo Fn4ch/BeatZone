@@ -31,7 +31,7 @@ export default function MenuDrawer(){
                 <List width='auto' sx={{mx:3}}>
                     <ListItem>
                         <Stack direction="row" spacing={2} alignItems='center'>
-                            <Avatar alt={{avatar}} src=""></Avatar>
+                            <Avatar src=""></Avatar>
                             <Typography variant='h5'>{username}</Typography>
                         </Stack>
                     </ListItem>
@@ -45,7 +45,7 @@ export default function MenuDrawer(){
                         <ListItemText primary={'Настройки'}/>
                     </ListItem>
                     <ListItem >
-                      <FormControlLabel labelPlacement="right" label="Тема" control={<Switch/>}/>
+                      <FormControlLabel labelPlacement="end" label="Тема" control={<Switch/>}/>
                     </ListItem>
                 </List>
             </SwipeableDrawer>

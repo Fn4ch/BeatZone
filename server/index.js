@@ -11,7 +11,11 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret"
 async function startServer(){
     const app = express()
 
-    app.use(cors())
+    var corsOptions = {
+    origin: 'http://localhost:3000',
+    credentials: true 
+  };
+  app.use(cors(corsOptions));
 
     const apolloServer = new ApolloServer({
         typeDefs,

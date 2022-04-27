@@ -2,22 +2,38 @@ import {useState} from 'react'
 import { TextField, Typography, Button, Container, Box, InputAdornment, IconButton, FormControl, FilledInput, InputLabel, FormHelperText} from '@mui/material'
 import { VisibilityOff, Visibility } from '@mui/icons-material'
 import Link from '../src/Link'
+import {useMutation, gql} from '@apollo/client'
+import { useRouter } from 'next/router'
+
 function LoginIn(){
 
-  const [values, setValues] = useState({
-      username : '',
-      password : '',
-      showPassword: false
-    })
-            
-      const changeHandler = (prop) => (event) => {
-        setValues({...values, [prop]: event.target.value})
-        console.log(values)
+  const router = useRouter()
+
+  const CREATE_USER_MUTATION = gql`
+    mutation logineUser($password: String, $email: String){
+      logineUser(password: $password, email: $email) 
       }
+    `
+    const [loginUser, {error, loading, data}] = useMutation(CREATE_USER_MUTATION)
 
-  const loginHandler = () =>{
-
+  const [values, setValues] = useState({
+    email : '',
+    password : '',
+    showPassword: false
+  })
+            
+  const changeHandler = (prop) => (event) => {
+    setValues({...values, [prop]: event.target.value})
+    console.log(values)
   }
+
+  const loginHandler = async (e) =>{
+    e.preventDefault()
+    loginUser({variables: {password: values.password, email: values.email}})
+    localStorage.setItem('token', data)
+    router.push('/')
+  }
+
   const handleClickShowPassword = () => {
     setValues({
       ...values,
@@ -38,20 +54,20 @@ return(
                 <FormControl sx={{my:4}}  fullWidth="true" color='secondary'> 
                   <InputLabel>Email</InputLabel>
                   <FilledInput
-                      id='username'
-                      fullWidth='true'
-                      onChange={changeHandler('username')}
+                      id='email'
+                      fullWidth={true}
+                      onChange={changeHandler('email')}
                   />
                 </FormControl>
 
-              <FormControl sx={{my:4}}  fullWidth="true" color='secondary'>
+              <FormControl sx={{my:4}}  fullWidth={true} color='secondary'>
                 <InputLabel >Password</InputLabel>
                 <FilledInput
                   id="password"
                   type={values.showPassword ? 'text' : 'password'}
                   value={values.password}
                   onChange={changeHandler('password')}
-                  fullWidth="true"                  
+                  fullWidth={true}                  
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton
