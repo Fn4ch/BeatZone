@@ -4,17 +4,21 @@ import { VisibilityOff, Visibility } from '@mui/icons-material'
 import Link from '../src/Link'
 import {useMutation, gql} from '@apollo/client'
 import { useRouter } from 'next/router'
+import Error from './ErrorMessage'
 
 function LoginIn(){
 
   const router = useRouter()
 
-  const CREATE_USER_MUTATION = gql`
-    mutation logineUser($password: String, $email: String){
-      logineUser(password: $password, email: $email) 
+  const LOGIN_USER_MUTATION = gql`
+    mutation loginUser($password: String, $email: String){
+      loginUser(password: $password, email: $email) 
       }
     `
-    const [loginUser, {error, loading, data}] = useMutation(CREATE_USER_MUTATION)
+    const [loginUser, {error, loading, data}] = useMutation(LOGIN_USER_MUTATION)
+  if(error){
+    Error(error, true)
+  }
 
   const [values, setValues] = useState({
     email : '',
@@ -30,8 +34,8 @@ function LoginIn(){
   const loginHandler = async (e) =>{
     e.preventDefault()
     loginUser({variables: {password: values.password, email: values.email}})
-    localStorage.setItem('token', data)
-    router.push('/')
+    localStorage.setItem('token', data.loginUser)
+    //router.push('/')
   }
 
   const handleClickShowPassword = () => {
@@ -51,11 +55,12 @@ return(
             <Box maxWidth="sm" width="xs" sx={{my: 10}} >
               <Typography color='light' variant="h2" align="center" sx={{my:4}}>Авторизация</Typography>
 
-                <FormControl sx={{my:4}}  fullWidth="true" color='secondary'> 
+                <FormControl sx={{my:4}}  fullWidth={true} color='secondary'> 
                   <InputLabel>Email</InputLabel>
                   <FilledInput
                       id='email'
                       fullWidth={true}
+                      type='email'
                       onChange={changeHandler('email')}
                   />
                 </FormControl>
@@ -71,6 +76,7 @@ return(
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton
+                        tabIndex={-1}
                         aria-label="toggle password visibility"
                         onClick={handleClickShowPassword}
                         onMouseDown={handleMouseDownPassword}
@@ -85,11 +91,11 @@ return(
               </FormControl>
 
             <Box sx={{my:5, mx:'auto'}} maxWidth="50%">
-                <Button sx={{mx:'auto'}} fullWidth="true" variant="outlined" onClick={loginHandler} color='secondary'>Войти</Button>
+                <Button sx={{mx:'auto'}} variant="contained" fullWidth={true} onClick={loginHandler} color='secondary'>Войти</Button>
             </Box>
 
             <Box display="flex" alignContent="center">
-                <Typography  fontSize="24" color='secondary' sx={{ml:'auto', mr:3}}>Всё ещё нет аккаутна?</Typography><Box sx={{mr:'auto'}}><Link href="/registration">Зарегистрироваться</Link></Box>
+                <Typography  fontSize="24" color='secondary.light' sx={{ml:'auto', mr:3}}>Всё ещё нет аккаутна?</Typography><Box sx={{mr:'auto'}}><Link href="/registration" >Зарегистрироваться</Link></Box>
             </Box> 
           </Box>          
         </Container>

@@ -9,14 +9,10 @@ import theme from '../src/theme'
 import { ThemeProvider } from '@mui/material'
 import { TextField, InputAdornment} from '@mui/material'
 import { Search } from '@mui/icons-material'
-import grey from '@mui/material/colors'
 import Player from '../components/player'
 import Layout from '../components/Layout'
 import Image from 'next/image'
-
-const myLoader = ({ src, width, quality }) => {
-  return `https://example.com/${src}?w=${width}&q=${quality || 75}`
-}
+import backImage from '../src/pictures/mountains.jpg'
 
 export default function Index() {  
 
@@ -25,15 +21,16 @@ export default function Index() {
     <>
       <ThemeProvider theme={theme}>
         <Layout>
-          <Container maxWidth="lg" sx={{borderRight:'5px, solid, #fff842', borderLeft:'5px, solid, #fff842'}} position='center'>
-            <Box sx={{mt:5}}></Box>
-            <Image
-              loader={myLoader}
-              src="\src\pictures\mountains.jpg"
-              alt="Picture of the author"
-              width={500}
-              height={500}
+          <Box sx={{zIndex: -2, height: 1/3, maxHeight: 1/3}}>
+          <Image
+              src={backImage}
+              alt="Picture of the authore"
+              layout='responsive'
+              height={1080}
             />
+          </Box>
+          <Container maxWidth="lg" sx={{borderRight:'5px, solid, #fff842', borderLeft:'5px, solid, #fff842'}} position='center'>
+            <Box sx={{mt:5}}></Box>            
               <Typography sx={{mt:10, ml:1}} align="left" variant='h1'>Место для</Typography>
                 <Box sx={{mx:"auto"}} maxWidth="sm">
                   <TextField 
@@ -42,7 +39,7 @@ export default function Index() {
                       id="seach_field"
                       label="Search"
                       color="secondary"
-                      fullWidth="true"
+                      fullWidth={true}
                       InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">

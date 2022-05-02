@@ -31,22 +31,25 @@ export default function MenuDrawer(){
                 <List width='auto' sx={{mx:3}}>
                     <ListItem>
                         <Stack direction="row" spacing={2} alignItems='center'>
-                            <Avatar src=""></Avatar>
+                            <Avatar src="" sizes='300'></Avatar>
                             <Typography variant='h5'>{username}</Typography>
                         </Stack>
                     </ListItem>
                     <ListItem button onClick={() =>{}}>
-                        <ListItemText primary={'Трэки'}/>
+                        <ListItemText primary={'Профиль'}/>
                     </ListItem>
                     <ListItem button onClick={() =>{}}>
-                        <ListItemText primary={'Понравилось'}/>
+                        <ListItemText primary={'Треки'}/>
+                    </ListItem>
+                    <ListItem button onClick={() =>{}}>
+                        <ListItemText primary={'Плейлисты'}/>
                     </ListItem>
                     <ListItem  button onClick={() =>{}}>
                         <ListItemText primary={'Настройки'}/>
                     </ListItem>
-                    <ListItem >
+                   <ListItem >
                       <FormControlLabel labelPlacement="end" label="Тема" control={<Switch/>}/>
-                    </ListItem>
+                   </ListItem>
                 </List>
             </SwipeableDrawer>
         </>

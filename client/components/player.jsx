@@ -40,7 +40,7 @@ const Player = () => {
                         </IconButton>
                         <IconButton
                         aria-label={paused ? 'play' : 'pause'}
-                        nClick={() => setPaused(!paused)}
+                        onClick={() => setPaused(!paused)}
                         >
                         {paused ? (
                             <PlayArrowRounded sx={{ fontSize: '3rem' }} htmlColor='light' />
@@ -56,7 +56,7 @@ const Player = () => {
                 </Box>
             <Slider
                 aria-label="time-indicator"
-                size="lg"    
+                size="medium"    
                 value={position}
                 min={0}
                 step={1}

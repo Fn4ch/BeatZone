@@ -89,6 +89,7 @@ import { useRouter } from 'next/router'
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton
+                        tabIndex={-1}
                         aria-label="toggle password visibility"
                         onClick={handleClickShowPassword}
                         onMouseDown={handleMouseDownPassword}
@@ -113,6 +114,7 @@ import { useRouter } from 'next/router'
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton
+                        tabIndex={-1}
                         aria-label="toggle password visibility"
                         onClick={handleClickShowPassword}
                         onMouseDown={handleMouseDownPassword}
@@ -129,7 +131,7 @@ import { useRouter } from 'next/router'
                     <Button variant="outlined" fullWidth={true} onClick={(e) => registerHandler(e)} color='secondary'>Зарегистрироваться</Button>
               </Box>
               <Box display="flex" alignContent="center">
-                <Typography  fontSize="24" color='secondary' sx={{ml:'auto', mr:3}}>Уже зарегистрированы?</Typography><Box sx={{mr:'auto'}}><Link href="/authorize"> Войти</Link></Box>
+                <Typography  fontSize="24" color='secondary' sx={{ml:'auto', mr:3}}>Уже зарегистрированы?</Typography><Box sx={{mr:'auto'}}><Link href="/loginIn">Войти</Link></Box>
               </Box>           
           </Box>
         </Container>

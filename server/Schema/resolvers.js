@@ -51,10 +51,8 @@ const resolvers = {
                 password
             })
             await newUser.save()
-            return jwt.sign({data: email}, JWT_SECRET, {expiresIn: "4h"})   
-            }           
-            
-        },
+            return jwt.sign({data: {email, password}}, JWT_SECRET, {expiresIn: "4h"})} 
+        }, 
         loginUser: async (parent, {password, email}) =>{    
             
             const user = await User.findOne({email})
@@ -62,7 +60,7 @@ const resolvers = {
             throw new ApolloError(`Пользователя с почтой ${email} не существует`)
             else{                    
                 if(user.password === password && user.email === email){
-                    return jwt.sign({data: email}, JWT_SECRET, {expiresIn: "4h"})
+                    return jwt.sign({data: {email, password}}, JWT_SECRET, {expiresIn: "4h"})
                 }
                     else
                     throw new AuthenticationError('Некорректные данные для входа')

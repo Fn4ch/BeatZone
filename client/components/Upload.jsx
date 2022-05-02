@@ -60,7 +60,7 @@ const Upload = () =>{
         <>            
             <IconButton onClick={handleClickOpen}><UploadFile fontSize='large' color='secondary' /></IconButton>
             <Dialog
-                fullWidth='lg'
+                fullWidth={true}
                 maxWidth='lg'
                 open={open}
                 onClose={handleClickClose}
