@@ -1,8 +1,8 @@
 import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Box} from '@mui/material'
+import { useState }  from 'react'
 
-const Error = (error, value) => {
-    setOpen = value
-    const [open, setOpen] = useState(false)
+const Error = (errorMessage) => {
+
 
     const handleClickClose = () =>{
         setOpen(false)
@@ -18,7 +18,7 @@ const Error = (error, value) => {
             <DialogTitle>Ошибка</DialogTitle>
             <DialogContent>
                 <Box justifyContent='center' alignContent='center'>
-                    <Typography variant='h4' sx={{my:3}}>{error}</Typography>
+                    <Typography variant='h4' sx={{my:3}}>{errorMessage}</Typography>
                 </Box>
             </DialogContent>
         </Dialog>

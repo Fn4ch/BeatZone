@@ -25,6 +25,7 @@ export default function NavBar(){
                     size='small'
                     label='Search'
                     color='secondary'
+                    
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">

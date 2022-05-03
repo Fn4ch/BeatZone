@@ -1,6 +1,6 @@
 import {useState} from 'react'
 import { TextField, Typography, Button, Container, Box, InputAdornment, IconButton, FormControl, FilledInput, InputLabel, FormHelperText} from '@mui/material'
-import { VisibilityOff, Visibility } from '@mui/icons-material'
+import { VisibilityOff, Visibility, TryOutlined } from '@mui/icons-material'
 import Link from '../src/Link'
 import {useMutation, gql} from '@apollo/client'
 import { useRouter } from 'next/router'
@@ -28,15 +28,20 @@ function LoginIn(){
             
   const changeHandler = (prop) => (event) => {
     setValues({...values, [prop]: event.target.value})
-    console.log(values)
   }
 
-  const loginHandler = async (e) =>{
-    e.preventDefault()
-    loginUser({variables: {password: values.password, email: values.email}})
-    localStorage.setItem('token', data.loginUser)
-    //router.push('/')
-  }
+  const loginHandler = (e) =>{
+       loginUser({variables: {password: values.password, email: values.email}})
+        if(data != undefined){
+          console.log(data.loginUser)
+          localStorage.setItem('token', data.loginUser)
+        }    
+        else{
+        console.log('Ошибка', data)
+        }
+        router.push('/')
+  }    
+  
 
   const handleClickShowPassword = () => {
     setValues({
@@ -49,7 +54,7 @@ function LoginIn(){
     event.preventDefault()
   }
 
-return(
+  return(
         <> 
         <Container maxWidth="lg" sx={{mt:10, display:'flex', justifyContent:'center'}}>
             <Box maxWidth="sm" width="xs" sx={{my: 10}} >

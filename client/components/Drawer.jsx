@@ -25,13 +25,12 @@ export default function MenuDrawer(){
                 >
                 </Box>
                 <Divider
-                    width={"400"}
                     color={"primary.light"}
                 />
                 <List width='auto' sx={{mx:3}}>
-                    <ListItem>
+                    <ListItem button onClick={()=>{}} >
                         <Stack direction="row" spacing={2} alignItems='center'>
-                            <Avatar src="" sizes='300'></Avatar>
+                            <Avatar src="" variant='rounded' sx={{width: 50, height: 50}}></Avatar>
                             <Typography variant='h5'>{username}</Typography>
                         </Stack>
                     </ListItem>
@@ -49,6 +48,9 @@ export default function MenuDrawer(){
                     </ListItem>
                    <ListItem >
                       <FormControlLabel labelPlacement="end" label="Тема" control={<Switch/>}/>
+                   </ListItem>
+                   <ListItem button onClick={() =>{localStorage.setItem('token', '')}}>
+                       <ListItemText >Выход</ListItemText>
                    </ListItem>
                 </List>
             </SwipeableDrawer>

@@ -1,4 +1,4 @@
-import { Container, Box, Typography, Slider, IconButton } from '@mui/material'
+import { Container, Box, Typography, Slider, IconButton, Avatar, Stack} from '@mui/material'
 import { FastRewindRounded, PlayArrowRounded, PauseRounded, FastForwardRounded } from '@mui/icons-material'
 import Image from 'next'
 import { useState } from 'react'
@@ -19,39 +19,39 @@ const Player = () => {
     let track = "if u was a man"
     return(
         <>
-        <Box sx={{display:'flex', flexDirection:'column', mx:'10%'}} height="200">
+        <Box sx={{display:'flex', flexDirection:'column', mx:'10%'}} maxWidth='xl' height="200">
             <Box sx={{display:'flex', alignItems:'center'}}>
-                <img src="" alt="trackImage" width="100" height="100"/>
+                <Avatar variant='square' sx={{width:100, height:100}}/>
                     <Box
-                    sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    mt: 1,                    
-                    }}
-                    >
-                        <Box width="auto" sx={{mx:5}}>
-                                <Typography>{author}</Typography>
-                                <Typography>{track}</Typography>                     
-                        </Box>
-                        
-                        <IconButton aria-label="previous song">
-                            <FastRewindRounded fontSize="large" htmlColor='secondary' />
-                        </IconButton>
-                        <IconButton
-                        aria-label={paused ? 'play' : 'pause'}
-                        onClick={() => setPaused(!paused)}
-                        >
-                        {paused ? (
-                            <PlayArrowRounded sx={{ fontSize: '3rem' }} htmlColor='light' />
-                            ) : 
-                        ( 
-                            <PauseRounded sx={{ fontSize: '3rem' }} htmlColor='light' /> 
-                        )}
-                    </IconButton>
-                    <IconButton aria-label="next song">
-                    <FastForwardRounded fontSize="large" htmlColor='light' />
-                    </IconButton>
+                        sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        mt: 1,                    
+                    }}>
+                    <Box width="auto" sx={{mx:5}}>
+                        <Typography>{author}</Typography>
+                        <Typography>{track}</Typography>                     
+                    </Box>
+                        <Stack direction='row'>
+                            <IconButton aria-label="previous song">
+                                <FastRewindRounded fontSize="large" htmlColor='secondary' />
+                            </IconButton>
+                            <IconButton
+                            aria-label={paused ? 'play' : 'pause'}
+                            onClick={() => setPaused(!paused)}
+                            >
+                            {paused ? (
+                                <PlayArrowRounded sx={{ fontSize: '3rem' }} htmlColor='light' />
+                                ) : 
+                            ( 
+                                <PauseRounded sx={{ fontSize: '3rem' }} htmlColor='light' /> 
+                            )}
+                            </IconButton>
+                            <IconButton aria-label="next song">
+                            <FastForwardRounded fontSize="large" htmlColor='light'/>
+                            </IconButton>
+                        </Stack>
                     </Box>
                 </Box>
             <Slider

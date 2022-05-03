@@ -21,8 +21,7 @@ const AccountMenu = () => {
       }
 
     return(
-        <>   
-            {auth && (
+        <>              
             <div>   
               <IconButton                 
                 size="large"
@@ -55,8 +54,7 @@ const AccountMenu = () => {
                 <MenuItem onClick={handleClose}>Playlists</MenuItem>
                 <MenuItem onClick={handleClose}>logout <Logout/></MenuItem>
               </Menu>
-            </div>
-            )}
+            </div>          
         </>
     )
 }

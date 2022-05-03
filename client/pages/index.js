@@ -14,41 +14,41 @@ import Layout from '../components/Layout'
 import Image from 'next/image'
 import backImage from '../src/pictures/mountains.jpg'
 
-export default function Index() {  
+export default function Index(props) {  
 
   
   return (
     <>
       <ThemeProvider theme={theme}>
-        <Layout>
-          <Box sx={{zIndex: -2, height: 1/3, maxHeight: 1/3}}>
-          <Image
-              src={backImage}
-              alt="Picture of the authore"
-              layout='responsive'
-              height={1080}
-            />
-          </Box>
-          <Container maxWidth="lg" sx={{borderRight:'5px, solid, #fff842', borderLeft:'5px, solid, #fff842'}} position='center'>
-            <Box sx={{mt:5}}></Box>            
-              <Typography sx={{mt:10, ml:1}} align="left" variant='h1'>Место для</Typography>
-                <Box sx={{mx:"auto"}} maxWidth="sm">
-                  <TextField 
-                      sx={{my: 3, md: 10}}
-                      variant="standard"
-                      id="seach_field"
-                      label="Search"
-                      color="secondary"
-                      fullWidth={true}
-                      InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                              <Search/>
-                            </InputAdornment>
-                        ),}}
-                  />
-                </Box>
-              <Typography align="right" sx={{mr:1}} variant='h1'>Музыки</Typography>              
+        <Layout>  
+              <Image
+                src={backImage}
+                alt="Picture of the authore"
+                layout='intrinsic'
+                height={1280}                
+              />
+          <Container maxWidth='xl' >
+            <Container maxWidth="lg" position='center'>
+              <Box sx={{mt:5}}></Box>            
+                <Typography sx={{mt:10, ml:1}} align="left" variant='h1'>Место для</Typography>
+                  <Box sx={{mx:"auto"}} maxWidth="sm">
+                    <TextField 
+                        sx={{my: 10, md: 10}}
+                        variant="standard"
+                        id="seach_field"
+                        label="Search"
+                        color="secondary"
+                        fullWidth={true}
+                        InputProps={{
+                          startAdornment: (
+                              <InputAdornment position="start">
+                                <Search/>
+                              </InputAdornment>
+                          ),}}
+                    />
+                  </Box>
+                <Typography align="right" sx={{mr:1}} variant='h1'>Музыки</Typography>              
+            </Container>
           </Container>
         </Layout> 
         <Player/>
