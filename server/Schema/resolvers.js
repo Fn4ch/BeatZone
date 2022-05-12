@@ -5,13 +5,39 @@ const Playlist  = require('../models/playlist')
 const { ApolloError, AuthenticationError } = require('apollo-server-express')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const fs = require('fs')
+const path = require('path')
+var cloudinary = require('cloudinary').v2;
+const {GraphQLUpload} = require('graphql-upload')
+const { finished } = require('stream')
 
 
 const JWT_SECRET = process.env.JWT_SECRET || "secret"
 
+cloudinary.config({ 
+    cloud_name: process.env.CLOUD_NAME , 
+    api_key: process.env.CLOUDINARY_API_KEY, 
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+    secure: true
+  })
+
+
+function makeRandom(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * 
+ charactersLength));
+   }
+   return result;
+}
+
 
 const resolvers = {
-    Query: {
+    Upload: GraphQLUpload,
+    Query: {     
+
         getAllUsers: async (_, _args, context) => { 
            /* const email = context.email
             const user = await User.findOne({email}) 
@@ -66,6 +92,32 @@ const resolvers = {
                     throw new AuthenticationError('Некорректные данные для входа')
             }
         },
+        uploadFile: async (parent, { file }) => {
+            const { createReadStream, filename} = await file;
+      
+            // Invoking the `createReadStream` will return a Readable Stream.
+            // See https://nodejs.org/api/stream.html#stream_readable_streams
+            const stream = createReadStream();
+
+            const ext = path.parse(filename)
+
+            const randomName = makeRandom(12) + ext
+            
+            const pathName = path.join(__dirname, `/public/tracks/${randomName}`)
+            stream.pipe(fs.createWriteStream(pathName))
+
+            await finished(pathName)
+
+            const resultUrl = (error, result) =>{
+                console.log(result, error)
+                return result
+            }
+            console.log(resultUrl)
+
+            cloudinary.uploader.upload(pathName, resultUrl)
+            
+            return resultUrl
+        },        
         addTrack : async (parent, args, context) => {
             const track = new Track({args})
             await track.save()

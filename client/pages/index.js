@@ -9,7 +9,7 @@ import theme from '../src/theme'
 import { ThemeProvider } from '@mui/material'
 import { TextField, InputAdornment} from '@mui/material'
 import { Search } from '@mui/icons-material'
-import Player from '../components/player'
+import MusicPlayer from '../components/player'
 import Layout from '../components/Layout'
 import Image from 'next/image'
 import backImage from '../src/pictures/mountains.jpg'
@@ -25,9 +25,10 @@ export default function Index(props) {
                 src={backImage}
                 alt="Picture of the authore"
                 layout='intrinsic'
-                height={1280}                
+                height={1200}       
+                className="pic"        
               />
-          <Container maxWidth='xl' >
+          <Container maxWidth='xl' sx={{mt:{xs:0,sm:0,md:-20,lg:-26,xl:-32}, zIndex:5}}>
             <Container maxWidth="lg" position='center'>
               <Box sx={{mt:5}}></Box>            
                 <Typography sx={{mt:10, ml:1}} align="left" variant='h1'>Место для</Typography>
@@ -51,7 +52,7 @@ export default function Index(props) {
             </Container>
           </Container>
         </Layout> 
-        <Player/>
+        <MusicPlayer/>
       </ThemeProvider>
     </>
   )

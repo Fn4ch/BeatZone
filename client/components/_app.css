@@ -1,0 +1,10 @@
+.pic{
+    width:max-content;
+    z-index: -3;
+    position: relative;
+}
+.footer{
+    position: fixed;
+    bottom: auto;
+    margin-bottom: 100px;
+}

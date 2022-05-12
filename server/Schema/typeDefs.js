@@ -1,43 +1,53 @@
-const { gql, AuthenticationError, ApolloServer } = require('apollo-server-express')
+const { gql } = require('apollo-server-express')
 
 const typeDefs = gql`
-    #Types 
+
+    scalar Upload
+
     type User{
         email: String!
         username: String!
         password: String!
-        playlist : [Playlist]
+        playlist: [Playlist]
         role: [Role]
     } 
+
 
     type Role {
         value: String!
     }
 
     type Track {
-        title : String!
-        author : String!
-        description : String!
-        tags : String
-        audio : String!
+        title: String!
+        author: String!
+        description: String!
+        tags: String
+        audio: String!
         duration: Float
-        comment : String
+        comment: String
     }
     
     type Playlist {
-        title : String!
-        Track : [Track!]!
-        author : String!
+        title: String!
+        Track: [Track!]!
+        author: String!
+    }
+
+    type File {
+        filename: String
+        mimetype: String
+        encoding: String
+        url: String!
     }
 
     #Queries
     type Query{ 
 
-        getAllUsers : [User]
+        getAllUsers: [User]
         
-        getAllTracks : [Track!]!
+        getAllTracks: [Track!]!
 
-        getUser(id : ID!) : User
+        getUser(id: ID!) : User
 
         getUserTracks(author: ID!) : [Track!]!
     }
@@ -45,7 +55,7 @@ const typeDefs = gql`
     input createUserInput{
         username: String
         password: String
-        email : String
+        email: String
     }
     
     input loginInput{
@@ -55,7 +65,7 @@ const typeDefs = gql`
 
     input addTrackInput{
         title: String!
-        author : ID
+        author: ID
         description: String
         audio: String
         image: String
@@ -67,11 +77,13 @@ const typeDefs = gql`
 
         loginUser(password: String, email: String) : String
 
+        uploadFile(file: Upload!): String
+
         addTrack(addTrackInput: addTrackInput) : Track
 
         deleteTrack(ID: String): Track
 
-        addPlaylist(title : String, Track: String, author: String): Playlist
+        addPlaylist(title: String, Track: String, author: String): Playlist
     }
 
 `

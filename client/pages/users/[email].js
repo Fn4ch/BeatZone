@@ -1,8 +1,7 @@
 import {Typography, Grid, TextField, Avatar, Container, Button, Stack} from '@mui/material'
 import Layout from '../../components/Layout'
 import { useState } from 'react'
-
-
+import Player from '../../components/player'
 
 export default function userPage(props) {
 
@@ -39,6 +38,7 @@ export default function userPage(props) {
                 </Grid>
             </Container>
         </Layout>
+        <Player/>
     </>
     )
 }

@@ -30,20 +30,19 @@ function LoginIn(){
     setValues({...values, [prop]: event.target.value})
   }
 
-  const loginHandler = (e) =>{
-       loginUser({variables: {password: values.password, email: values.email}})
-        if(data != undefined){
-          console.log(data.loginUser)
-          localStorage.setItem('token', data.loginUser)
-        }    
-        else{
-        console.log('Ошибка', data)
-        }
-        router.push('/')
-  }    
-  
+  const loginHandler = () =>{
+    loginUser({variables: {password: values.password, email: values.email}})
+    .then(() => {
+      if(data != undefined)
+      {
+        localStorage.setItem('token', data.loginUser)
+        router.push('/')}
+      })
+    .catch(console.log(error))
+    }
 
-  const handleClickShowPassword = () => {
+  const handleClickShowPassword = (e) => {
+    e.preventDefault()
     setValues({
       ...values,
       showPassword: !values.showPassword,

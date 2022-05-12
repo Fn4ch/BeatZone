@@ -11,6 +11,8 @@ import {ApolloClient} from '@apollo/client'
 import {createHttpLink} from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
 import { onError } from "@apollo/client/link/error"
+import { createUploadLink } from 'apollo-upload-client'
+import '../components/_app.css'
 
 const clientSideEmotionCache = createEmotionCache()
 
@@ -42,8 +44,8 @@ export default function MyApp(props) {
   }
   })
 
-  const client = new ApolloClient({    
-    link: authLink.concat(from([errorLink, httpLink])),
+  const client = new ApolloClient({
+    link: authLink.concat(from([errorLink, httpLink]))  ,
     cache: new InMemoryCache(),
     credentials: 'include',
   })
