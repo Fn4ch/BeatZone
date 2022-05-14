@@ -93,13 +93,14 @@ const resolvers = {
             }
         },
         uploadFile: async (parent, { file }) => {
-            const { createReadStream, filename} = await file;
+            const { createReadStream, filename} = await file
       
             // Invoking the `createReadStream` will return a Readable Stream.
             // See https://nodejs.org/api/stream.html#stream_readable_streams
-            const stream = createReadStream();
+            const stream = createReadStream()
 
             const ext = path.parse(filename)
+            console.log(ext)
 
             const randomName = makeRandom(12) + ext
             
@@ -108,15 +109,10 @@ const resolvers = {
 
             await finished(pathName)
 
-            const resultUrl = (error, result) =>{
-                console.log(result, error)
-                return result
-            }
-            console.log(resultUrl)
 
-            cloudinary.uploader.upload(pathName, resultUrl)
+            cloudinary.v2.uploader.unsigned_upload(file, "beatzone", options, callback)
             
-            return resultUrl
+            return result
         },        
         addTrack : async (parent, args, context) => {
             const track = new Track({args})

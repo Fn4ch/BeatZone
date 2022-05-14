@@ -12,13 +12,15 @@ const Upload = () =>{
 
     const [open, setOpen] = useState(false)
 
-    const [track, setTrack] = useState()
+    const [trackAudio, setTrackAudio] = useState()
+    const [trackImage, setTrackImage] = useState()
 
     const [trackData, setTrackData] = useState({
+        image: '',
         name: '',
         author: '',
         description: '',
-        url: ''
+        audio: ''
     })
 
     const handleClickClose = () =>{
@@ -48,35 +50,52 @@ const Upload = () =>{
         acceptedFiles.map((file) => {
             const reader = new FileReader()
             reader.onload = () => {
-                setTrack(reader.result)
+                setTrackAudio(reader.result)
                 console.log(reader.result)               
             }
             reader.readAsDataURL(file)
-            console.log('file', file)
         })
     }, [])    
 
     const {getRootProps, getInputProps, acceptedFiles } = useDropzone({onDrop, maxFiles: 1})
 
 
-    const UPLOAD_FILE = gql`
-        mutation uploadFile($file: Upload!){
-            uploadFile(file: $file)
-        }
-    `
-
-    const [uploadFile, {data, loading, error}] = useMutation(UPLOAD_FILE, {onCompleted: data => console.log(data)})
-
     if(loading) return 'Submitting...'
     if(error) return `'Submition error!' ${error.message}`
 
+    function uploadImage(){
+        const formData = new FormData()
+        formData.append('file', trackImage )
+        formData.append('upload_preset', 'beatzone')
+        const url = await fetch('https://api.cloudinary.com/v1_1/dxegpqszm/image/upload', {
+            method: 'POST',
+            body: formData
+        }).then(r => {
+            console.log(r)
+            r.json()
+        })
+    }
+
+    function uploadAudio(){
+        const formData = new FormData()
+        formData.append('file', trackAudio )
+        formData.append('upload_preset', 'beatzone')
+        const url = await fetch('https://api.cloudinary.com/v1_1/dxegpqszm/video/upload', {
+            method: 'POST',
+            body: formData
+        }).then(r => {
+            console.log(r)
+            r.json()
+        })
+    }
+
     
 
-    const uploadHandler = (e) =>{
+    const uploadHandler = async (e) =>{
         e.preventDefault()
         console.log(track, 'Загружаемый трек')
-        uploadFile({variables: {file: track}})
-        
+        uploadAudio()
+
     }
 
     const files = acceptedFiles.map(file => <Typography key={file.path} >{file.path}</Typography>)
@@ -99,7 +118,7 @@ const Upload = () =>{
                     <Box margin={4}>
                         <div {...getRootProps()}>
                             <input {...getInputProps()}/>
-                            <Typography>Нажмите для выбора аудиофайла</Typography>
+                            <Typography height={200}>Нажмите для выбора аудиофайла</Typography>
                             <List>
                                 <ListItem>
                                 {files}
