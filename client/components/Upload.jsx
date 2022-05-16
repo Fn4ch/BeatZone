@@ -60,10 +60,10 @@ const Upload = () =>{
     const {getRootProps, getInputProps, acceptedFiles } = useDropzone({onDrop, maxFiles: 1})
 
 
-    if(loading) return 'Submitting...'
-    if(error) return `'Submition error!' ${error.message}`
+    // if(loading) return 'Submitting...'
+    // if(error) return `'Submition error!' ${error.message}`
 
-    function uploadImage(){
+    async function uploadImage(){
         const formData = new FormData()
         formData.append('file', trackImage )
         formData.append('upload_preset', 'beatzone')
@@ -76,7 +76,7 @@ const Upload = () =>{
         })
     }
 
-    function uploadAudio(){
+    async function uploadAudio(){
         const formData = new FormData()
         formData.append('file', trackAudio )
         formData.append('upload_preset', 'beatzone')
@@ -84,8 +84,10 @@ const Upload = () =>{
             method: 'POST',
             body: formData
         }).then(r => {
-            console.log(r)
             r.json()
+            console.log(r)
+        }).then(data => 
+            {setTrackAudio(data)
         })
     }
 
@@ -93,7 +95,7 @@ const Upload = () =>{
 
     const uploadHandler = async (e) =>{
         e.preventDefault()
-        console.log(track, 'Загружаемый трек')
+        console.log(trackAudio, 'Загружаемый трек')
         uploadAudio()
 
     }

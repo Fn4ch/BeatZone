@@ -5,7 +5,6 @@ const typeDefs = require('./Schema/typeDefs')
 const express = require('express')
 const cors = require('cors')
 const jwt = require('jsonwebtoken')
-const { graphqlUploadExpress } = require('graphql-upload')
 
 const JWT_SECRET = process.env.JWT_SECRET || "secret"
 
@@ -43,7 +42,6 @@ async function startServer(){
        
     await apolloServer.start()
 
-    app.use(graphqlUploadExpress())
 
     apolloServer.applyMiddleware({app})
 
