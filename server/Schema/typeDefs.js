@@ -2,42 +2,39 @@ const { gql } = require('apollo-server-express')
 
 const typeDefs = gql`
 
-    scalar Upload
-
     type User{
+        id: ID
         email: String!
         username: String!
         password: String!
         playlist: [Playlist]
+        image: String
         role: [Role]
+        token: String
     } 
 
 
     type Role {
+        id: ID
         value: String!
     }
 
     type Track {
+        id: ID
         title: String!
         author: String!
         description: String!
         tags: String
+        likes: Int
         audio: String!
-        duration: Float
         comment: String
     }
     
     type Playlist {
+        id: ID
         title: String!
         Track: [Track!]!
         author: String!
-    }
-
-    type File {
-        filename: String
-        mimetype: String
-        encoding: String
-        url: String!
     }
 
     #Queries
@@ -63,23 +60,13 @@ const typeDefs = gql`
         password: String
     }
 
-    input addTrackInput{
-        title: String!
-        author: ID
-        description: String
-        audio: String
-        image: String
-    }
-
     #Mutations
     type Mutation{
-        createUser(username: String, password: String, email: String) : String
+        createUser(username: String, password: String, email: String) : User
+        
+        loginUser(password: String, email: String) : User
 
-        loginUser(password: String, email: String) : String
-
-        uploadFile(file: Upload!): String
-
-        addTrack(addTrackInput: addTrackInput) : Track
+        addTrack(name: String!, author: String, description: String, audio: String, image: String) : Track 
 
         deleteTrack(ID: String): Track
 

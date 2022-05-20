@@ -1,15 +1,20 @@
-import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Box, Input, List, ListItem, Button, TextField, Stack} from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, Typography, IconButton, Box, Input, List, ListItem, Button, TextField, Stack, Avatar} from '@mui/material'
 import { useState, useCallback, useEffect } from 'react'
 import { UploadFile } from '@mui/icons-material'
 import { useDropzone } from 'react-dropzone'
-import { gql, useMutation } from '@apollo/client'
-
+import { gql, useMutation, useReactiveVar } from '@apollo/client'
+import { styled } from '@mui/material/styles'
+import { Image } from 'cloudinary-react'
+import trackTemplate from '../src/pictures/trackTemplate.png'
 
 
 const Upload = () =>{
 
-    const [drag, setDrag] = useState(false)
+    const Input = styled('input')({
+        display: 'none',
+    })
 
+    const [drag, setDrag] = useState(false)
     const [open, setOpen] = useState(false)
 
     const [trackAudio, setTrackAudio] = useState()
@@ -23,6 +28,9 @@ const Upload = () =>{
         audio: ''
     })
 
+    useEffect(()=>{
+        trackData.image
+    })
     const handleClickClose = () =>{
         setOpen(false)
     }
@@ -50,7 +58,7 @@ const Upload = () =>{
         acceptedFiles.map((file) => {
             const reader = new FileReader()
             reader.onload = () => {
-                setTrackAudio(reader.result)
+                setTrackImage(reader.result)
                 console.log(reader.result)               
             }
             reader.readAsDataURL(file)
@@ -70,10 +78,9 @@ const Upload = () =>{
         const url = await fetch('https://api.cloudinary.com/v1_1/dxegpqszm/image/upload', {
             method: 'POST',
             body: formData
-        }).then(r => {
-            console.log(r)
-            r.json()
-        })
+        }).then(r => r.json())
+        console.log(url)
+        setTrackData({image: url.url})
     }
 
     async function uploadAudio(){
@@ -83,25 +90,18 @@ const Upload = () =>{
         const url = await fetch('https://api.cloudinary.com/v1_1/dxegpqszm/video/upload', {
             method: 'POST',
             body: formData
-        }).then(r => {
-            r.json()
-            console.log(r)
-        }).then(data => 
-            {setTrackAudio(data)
-        })
+        }).then(r => r.json())
+        console.log(url)
+        setTrackData({audio: url.url})
     }
-
-    
 
     const uploadHandler = async (e) =>{
         e.preventDefault()
-        console.log(trackAudio, 'Загружаемый трек')
         uploadAudio()
-
+        uploadImage()
     }
 
-    const files = acceptedFiles.map(file => <Typography key={file.path} >{file.path}</Typography>)
-
+    const imagePath = acceptedFiles.map(file => <Typography marginLeft={4} key={file.path} >{file.path}</Typography>)
     return(
         <>            
             <IconButton onClick={handleClickOpen}><UploadFile fontSize='large' color='secondary' /></IconButton>
@@ -112,22 +112,37 @@ const Upload = () =>{
                 onClose={handleClickClose}
             >                
                 <DialogTitle sx={{mx:'auto'}}>Upload Track</DialogTitle>
-                <DialogContent sx={{width:'lg', height:'600px', display:'flex', flexDirection:'column'}}>
-                    <Stack spacing={4} marginLeft={4}>
-                        <TextField sx={{width: 300}}  type='text' id='name' label='Название' size='small' onChange={changeHandler('name')}></TextField>
-                        <TextField sx={{width: 300}}  type='text' id='description' label='Описание' size='small' onChange={changeHandler('description')}></TextField>
-                    </Stack>
-                    <Box margin={4}>
+                <DialogContent sx={{width:'lg', height:'600px', display:'flex', flexDirection:'column'}}>                                    
                         <div {...getRootProps()}>
-                            <input {...getInputProps()}/>
-                            <Typography height={200}>Нажмите для выбора аудиофайла</Typography>
+                            <Stack spacing={4} direction="row" marginTop={4} alignContent='center' alignItems='center'>
+                                <input {...getInputProps()}/>
+                                <Image src={trackData.image} height={150} width={150}/>
+                                <Stack direction="column" justifyItems='center' alignItems='center'>
+                                    <Typography fontSize={18} >Перетащите картинку или нажмите чтобы выбрать</Typography>
+                                </Stack>                        
+                            </Stack>
                             <List>
                                 <ListItem>
-                                {files}
+                                    {imagePath}
                                 </ListItem>
                             </List>
-                        </div> 
-                    </Box>                     
+                        </div>
+                        <Stack spacing={4} marginLeft={4}>
+                            <TextField sx={{width: 2/5, fontSize:30}}  type='text' id='name' label='Название' size='small' onChange={changeHandler('name')}></TextField>
+                            <TextField sx={{width: 2/5}}  multiline  maxRows={3} type='text' id='description' label='Описание' size='small' onChange={changeHandler('description')}></TextField>
+                        </Stack>
+                        <Stack spacing={4} marginTop={4} marginLeft={4} direction="row">                            
+                            <Typography fontSize={18}>Нажмите чтобы выбрать аудиофайл</Typography>
+                            <label htmlFor="contained-button-file">
+                                <Input accept="audio/*" id="contained-button-file" type="file" onChange={(e)=>setTrackAudio(e.target.files[0])}/>
+                                <Button variant="contained" component="span" sx={{width:200}}>Выбрать</Button>                                
+                            </label> 
+                        </Stack>
+                        <List>
+                            <ListItem>
+                                {imagePath}
+                            </ListItem>
+                        </List>                   
                 </DialogContent>
                     <Box flexGrow="1"></Box>
                     <Button variant='contained' sx={{width: 'sm'}} color='secondary' fullWidth={false} onClick={uploadHandler}>Загрузить</Button>   

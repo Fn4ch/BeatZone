@@ -14,8 +14,8 @@ import Layout from '../components/Layout'
 import Image from 'next/image'
 import backImage from '../src/pictures/mountains.jpg'
 
-export default function Index(props) {  
-
+export default function Index(props) { 
+    
   
   return (
     <>

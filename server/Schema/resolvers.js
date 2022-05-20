@@ -5,49 +5,17 @@ const Playlist  = require('../models/playlist')
 const { ApolloError, AuthenticationError } = require('apollo-server-express')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const fs = require('fs')
-const path = require('path')
-var cloudinary = require('cloudinary').v2;
-const {GraphQLUpload} = require('graphql-upload')
-const { finished } = require('stream')
-
+const { cookieParser } = require('cookie-parser')
+const { cookie } = require('cookie')
 
 const JWT_SECRET = process.env.JWT_SECRET || "secret"
 
-cloudinary.config({ 
-    cloud_name: process.env.CLOUD_NAME , 
-    api_key: process.env.CLOUDINARY_API_KEY, 
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-    secure: true
-  })
-
-
-function makeRandom(length) {
-    var result           = '';
-    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charactersLength = characters.length;
-    for ( var i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * 
- charactersLength));
-   }
-   return result;
-}
-
 
 const resolvers = {
-    Upload: GraphQLUpload,
     Query: {     
 
-        getAllUsers: async (_, _args, context) => { 
-           /* const email = context.email
-            const user = await User.findOne({email}) 
-        if(user == null)
-        {
-            throw new AuthenticationError('Некорректные данные')
-        }
-        else{*/
-                return await User.find()
-            //}            
+        getAllUsers: async (_, _args, context) => {
+            return await User.find()         
         },
 
         getAllTracks : async (_, _args, context) => {
@@ -66,54 +34,35 @@ const resolvers = {
         createUser: async (_,{username, password, email}) =>
         {
             const oldUser = await User.findOne({email})
-
+            const oldUser2 = await User.findOne({username})
+            if(oldUser2)
+            throw new ApolloError('Пользователь с таким именем уже зарегистрирован:' + username, 'USER_ALREADY_EXSISTS')
             if(oldUser)
             throw new ApolloError('Пользователь с таким email уже зарегистрирован:' + email,'USER_ALREADY_EXISTS')
             else{
                 email = email.toLowerCase()
-            const newUser = new User({
-                email,
-                username,
-                password
-            })
-            await newUser.save()
-            return jwt.sign({data: {email, password}}, JWT_SECRET, {expiresIn: "4h"})} 
+                const newUser = new User({
+                    email,
+                    username,
+                    password
+                })
+                await newUser.save()            
+            }
+            return newUser
         }, 
-        loginUser: async (parent, {password, email}) =>{    
+        loginUser: async (parent, {password, email}, context) =>{    
             
             const user = await User.findOne({email})
             if(!user)
-            throw new ApolloError(`Пользователя с почтой ${email} не существует`)
+                throw new ApolloError(`Пользователя с почтой ${email} не существует`)
             else{                    
-                if(user.password === password && user.email === email){
-                    return jwt.sign({data: {email, password}}, JWT_SECRET, {expiresIn: "4h"})
-                }
-                    else
-                    throw new AuthenticationError('Некорректные данные для входа')
+                  if(user.password === password && user.email === email){
+                    const token = jwt.sign({data: {email, password}}, JWT_SECRET, {expiresIn: "24h"})
+                    user.token = token
+                    return user                            
+                } else throw new AuthenticationError('Некорректные данные для входа')
             }
-        },
-        uploadFile: async (parent, { file }) => {
-            const { createReadStream, filename} = await file
-      
-            // Invoking the `createReadStream` will return a Readable Stream.
-            // See https://nodejs.org/api/stream.html#stream_readable_streams
-            const stream = createReadStream()
-
-            const ext = path.parse(filename)
-            console.log(ext)
-
-            const randomName = makeRandom(12) + ext
-            
-            const pathName = path.join(__dirname, `/public/tracks/${randomName}`)
-            stream.pipe(fs.createWriteStream(pathName))
-
-            await finished(pathName)
-
-
-            cloudinary.v2.uploader.unsigned_upload(file, "beatzone", options, callback)
-            
-            return result
-        },        
+        },    
         addTrack : async (parent, args, context) => {
             const track = new Track({args})
             await track.save()

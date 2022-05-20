@@ -6,10 +6,12 @@ import { Notifications}  from '@mui/icons-material'
 import MenuDrawer from './Drawer'
 import Link from '../src/Link'
 import Upload from '../components/Upload'
+import { useSelector } from 'react-redux'
+import { selectUser } from '../src/features/userSlice'
+import { useRouter } from 'next/router'
 
 
 export default function NavBar(){
-
 
   return(
       <AppBar position="fixed" color='transparent'>

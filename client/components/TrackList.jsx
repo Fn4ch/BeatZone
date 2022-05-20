@@ -1,5 +1,6 @@
 import { Favorite, FavoriteBorder } from '@mui/icons-material'
 import {List, Container, Box, ListItem, Typography} from '@mui/material'
+import { Image } from 'next'
 
 const TrackList = () =>{
 

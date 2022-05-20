@@ -1,15 +1,17 @@
 import { Menu } from '@mui/icons-material'
 import { SwipeableDrawer, List, ListItem, ListItemText, Box, Divider, Switch, FormControlLabel, Stack, Avatar, Typography} from '@mui/material'
 import { useState } from 'react'
-import Image from 'next'
+import { useRouter } from 'next/router'
+import cookie from 'js-cookie'
 
 export default function MenuDrawer(){
 
 
     const [open, setOpen] = useState(false)
 
-    let avatar
-    let username = 'user'
+    let username = 'artur'
+
+    const router = useRouter()
     
     return(
         <>
@@ -34,13 +36,13 @@ export default function MenuDrawer(){
                             <Typography variant='h5'>{username}</Typography>
                         </Stack>
                     </ListItem>
-                    <ListItem button onClick={() =>{}}>
+                    <ListItem button onClick={() =>{ router.push('/profile')}}>
                         <ListItemText primary={'Профиль'}/>
                     </ListItem>
-                    <ListItem button onClick={() =>{}}>
+                    <ListItem button onClick={() =>{ router.push(`/${user}/tracks`)}}>
                         <ListItemText primary={'Треки'}/>
                     </ListItem>
-                    <ListItem button onClick={() =>{}}>
+                    <ListItem button onClick={() =>{router.push(`/${user}/playlists}`)}}>
                         <ListItemText primary={'Плейлисты'}/>
                     </ListItem>
                     <ListItem  button onClick={() =>{}}>
@@ -49,7 +51,10 @@ export default function MenuDrawer(){
                    <ListItem >
                       <FormControlLabel labelPlacement="end" label="Тема" control={<Switch/>}/>
                    </ListItem>
-                   <ListItem button onClick={() =>{localStorage.setItem('token', '')}}>
+                   <ListItem button onClick={() =>{
+                        cookie.remove('auth-token')
+                        router.push('login')
+                    }}>
                        <ListItemText >Выход</ListItemText>
                    </ListItem>
                 </List>

@@ -5,18 +5,28 @@ import Link from '../src/Link'
 import {useMutation, gql} from '@apollo/client'
 import { useRouter } from 'next/router'
 import Error from './ErrorMessage'
+import cookie from 'js-cookie'
+import { useDispatch } from 'react-redux'
+import { login } from '../src/features/userSlice'
 
 function LoginIn(){
+
+  const dispatch = useDispatch()
 
   const router = useRouter()
 
   const LOGIN_USER_MUTATION = gql`
     mutation loginUser($password: String, $email: String){
-      loginUser(password: $password, email: $email) 
+      loginUser(password: $password, email: $email){
+        email
+        username
+        password
+        token
+      }
       }
     `
     const [loginUser, {error, loading, data}] = useMutation(LOGIN_USER_MUTATION)
-  if(error){
+    if(error){
     Error(error, true)
   }
 
@@ -25,32 +35,40 @@ function LoginIn(){
     password : '',
     showPassword: false
   })
+
+
             
   const changeHandler = (prop) => (event) => {
     setValues({...values, [prop]: event.target.value})
-  }
-
-  const loginHandler = () =>{
-    loginUser({variables: {password: values.password, email: values.email}})
-    .then(() => {
-      if(data != undefined)
-      {
-        localStorage.setItem('token', data.loginUser)
-        router.push('/')}
-      })
-    .catch(console.log(error))
-    }
+  }  
 
   const handleClickShowPassword = (e) => {
-    e.preventDefault()
-    setValues({
-      ...values,
-      showPassword: !values.showPassword,
-    })
+  e.preventDefault()
+  setValues({
+    ...values,
+    showPassword: !values.showPassword,
+  })
   }
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault()
+  }
+
+  const loginHandler = async (e) =>{
+    e.preventDefault()
+      await loginUser({variables: {password: values.password, email: values.email}, onCompleted: (data) =>{
+        
+        cookie.set('auth-token', data.loginUser.token, {expires: 12/24})
+
+        dispatch(login({
+          username : data.loginUser.username,
+          email: data.loginUser.email,
+          password: data.loginUser.password,
+          loggedIn: true
+        }))
+
+        router.push('/')
+      }})
   }
 
   return(

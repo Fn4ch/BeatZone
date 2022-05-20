@@ -7,17 +7,18 @@ import { CacheProvider } from '@emotion/react'
 import theme from '../src/theme'
 import createEmotionCache from '../src/createEmotionCache'
 import { ApolloProvider, InMemoryCache, HttpLink, from} from '@apollo/client'
-import {ApolloClient} from '@apollo/client'
-import {createHttpLink} from '@apollo/client'
+import {ApolloClient, createHttpLink} from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
 import { onError } from "@apollo/client/link/error"
-import { createUploadLink } from 'apollo-upload-client'
 import '../components/_app.css'
+import cookie from 'js-cookie'
+import store from '../src/app/store'
+import { Provider, useSelector } from 'react-redux'
 
 const clientSideEmotionCache = createEmotionCache()
 
 export default function MyApp(props) {
-  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
+  const { Component, emotionCache = clientSideEmotionCache, pageProps} = props
 
   const httpLink = new HttpLink({
     uri: 'http://localhost:5000/graphql'
@@ -34,8 +35,7 @@ export default function MyApp(props) {
     })
   
   const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem('token');
-  console.log(token , "Через getItem")
+  const token = cookie.get('auth-token')
   return {
     headers: {
       ...headers,
@@ -44,14 +44,20 @@ export default function MyApp(props) {
   }
   })
 
+
+
   const client = new ApolloClient({
     link: authLink.concat(from([errorLink, httpLink]))  ,
     cache: new InMemoryCache(),
     credentials: 'include',
   })
 
+
+
   return (
-      <CacheProvider value={emotionCache}>
+    
+    <CacheProvider value={emotionCache}>
+      <Provider store={store}>
         <ApolloProvider client={client}>
           <Head>
             <meta name="viewport" content="initial-scale=1, width=device-width" />
@@ -61,7 +67,9 @@ export default function MyApp(props) {
             <Component {...pageProps} />
           </ThemeProvider>
         </ApolloProvider>
-      </CacheProvider>    
+      </Provider> 
+    </CacheProvider>  
+     
   )
 }
 

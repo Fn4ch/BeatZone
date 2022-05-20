@@ -46,9 +46,8 @@ import { useRouter } from 'next/router'
     
     const registerHandler = async (e) => {
       e.preventDefault()
-      createUser({variables: {username, password, email}})
-      localStorage.setItem('token', data)
-      router.push('/')
+      await createUser({variables: {username, password, email}})
+      router.push('/loginIn')
     }
   
 
