@@ -3,6 +3,8 @@ import { SwipeableDrawer, List, ListItem, ListItemText, Box, Divider, Switch, Fo
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import cookie from 'js-cookie'
+import { useDispatch } from 'react-redux'
+import { logout } from '../src/features/userSlice'
 
 export default function MenuDrawer(){
 
@@ -12,6 +14,8 @@ export default function MenuDrawer(){
     let username = 'artur'
 
     const router = useRouter()
+
+    const dispatch = useDispatch()
     
     return(
         <>
@@ -53,6 +57,7 @@ export default function MenuDrawer(){
                    </ListItem>
                    <ListItem button onClick={() =>{
                         cookie.remove('auth-token')
+                        dispatch(logout())
                         router.push('login')
                     }}>
                        <ListItemText >Выход</ListItemText>

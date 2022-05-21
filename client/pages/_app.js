@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import Head from 'next/head'
 import { ThemeProvider } from '@mui/material/styles'
@@ -14,11 +15,39 @@ import '../components/_app.css'
 import cookie from 'js-cookie'
 import store from '../src/app/store'
 import { Provider, useSelector } from 'react-redux'
+import { useRouter } from 'next/router'
+import jwt_decode from 'jwt-decode'
+import { UserContext } from '../components/user'
+
+
 
 const clientSideEmotionCache = createEmotionCache()
 
 export default function MyApp(props) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps} = props
+
+
+  const [user, setUser] = useState(null)
+
+  
+  const router = useRouter()
+
+  useEffect(() => {    
+     //Here goes the logic of retrieving a user
+    const token = cookie.get('auth-token')
+    if(!token){
+      router.push('/authorize')
+    }
+    else{
+      const decoded = jwt_decode(token)
+      console.log(decoded)      
+    }    
+
+  }, [])
+
+  if (pageProps.protected && !user) {
+    return <Layout>Loading...</Layout>
+  }
 
   const httpLink = new HttpLink({
     uri: 'http://localhost:5000/graphql'
@@ -58,15 +87,17 @@ export default function MyApp(props) {
     
     <CacheProvider value={emotionCache}>
       <Provider store={store}>
+        <UserContext.Provider value={user}>
         <ApolloProvider client={client}>
           <Head>
             <meta name="viewport" content="initial-scale=1, width=device-width" />
           </Head>
           <ThemeProvider theme={theme}>
-            <CssBaseline />
+            <CssBaseline />              
             <Component {...pageProps} />
           </ThemeProvider>
         </ApolloProvider>
+        </UserContext.Provider>
       </Provider> 
     </CacheProvider>  
      

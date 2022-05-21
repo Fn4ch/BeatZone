@@ -58,12 +58,13 @@ function LoginIn(){
     e.preventDefault()
       await loginUser({variables: {password: values.password, email: values.email}, onCompleted: (data) =>{
         
-        cookie.set('auth-token', data.loginUser.token, {expires: 12/24})
+        cookie.set('auth-token', data.loginUser.token, {expires: 4/24})
 
         dispatch(login({
           username : data.loginUser.username,
           email: data.loginUser.email,
           password: data.loginUser.password,
+          image: data.loginUser.image,          
           loggedIn: true
         }))
 
@@ -72,29 +73,25 @@ function LoginIn(){
   }
 
   return(
-        <> 
-        <Container maxWidth="lg" sx={{mt:10, display:'flex', justifyContent:'center'}}>
-            <Box maxWidth="sm" width="xs" sx={{my: 10}} >
-              <Typography color='light' variant="h2" align="center" sx={{my:4}}>Авторизация</Typography>
-
-                <FormControl sx={{my:4}}  fullWidth={true} color='secondary'> 
+        <>     
+            <FormControl sx={{my:3}}  fullWidth color='secondary'> 
                   <InputLabel>Email</InputLabel>
                   <FilledInput
                       id='email'
-                      fullWidth={true}
+                      fullWidth
                       type='email'
                       onChange={changeHandler('email')}
                   />
-                </FormControl>
+            </FormControl>
 
-              <FormControl sx={{my:4}}  fullWidth={true} color='secondary'>
+              <FormControl sx={{my:3}}  fullWidth color='secondary'>
                 <InputLabel >Password</InputLabel>
                 <FilledInput
                   id="password"
                   type={values.showPassword ? 'text' : 'password'}
                   value={values.password}
                   onChange={changeHandler('password')}
-                  fullWidth={true}                  
+                  fullWidth                  
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton
@@ -113,14 +110,8 @@ function LoginIn(){
               </FormControl>
 
             <Box sx={{my:5, mx:'auto'}} maxWidth="50%">
-                <Button sx={{mx:'auto'}} variant="contained" fullWidth={true} onClick={loginHandler} color='secondary'>Войти</Button>
+                <Button sx={{mx:'auto'}} variant="contained" fullWidth onClick={loginHandler} color='secondary'>Войти</Button>
             </Box>
-
-            <Box display="flex" alignContent="center">
-                <Typography  fontSize="24" color='secondary.light' sx={{ml:'auto', mr:3}}>Всё ещё нет аккаутна?</Typography><Box sx={{mr:'auto'}}><Link href="/registration" >Зарегистрироваться</Link></Box>
-            </Box> 
-          </Box>          
-        </Container>
         </>
     )
 }

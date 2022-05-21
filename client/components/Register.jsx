@@ -53,38 +53,32 @@ import { useRouter } from 'next/router'
 
 
   return(
-    <>
-        <Container maxWidth="lg" spacing={2} sx={{mt:3, display:'flex', justifyContent:'center',justifyItems:'center'}}>
-          <Box maxWidth="sm" width="xs" sx={{my:10}}>
-            <Box sx={{my:5}} >
-              <Typography color='light' variant="h2" align='center'>Регистрация</Typography>
-            </Box>
-
-            <FormControl sx={{my:4}}  fullWidth={true} color='secondary'> 
+    <>     
+            <FormControl sx={{my:3}}  fullWidth color='secondary'> 
                   <InputLabel >Email</InputLabel>
                   <FilledInput
                       id='email'
-                      fullWidth={true}
+                      fullWidth
                       onChange={ e => setEmail(e.target.value)}
                   />
             </FormControl>
-            <FormControl sx={{my:4}}  fullWidth={true} color='secondary'> 
+            <FormControl sx={{my:3}}  fullWidth color='secondary'> 
                   <InputLabel>username</InputLabel>
                   <FilledInput
                       id='username'
-                      fullWidth={true}
+                      fullWidth
                       onChange={ e => setUsername (e.target.value)}                      
                   />
             </FormControl>
 
-            <FormControl sx={{my:4}}  fullWidth={true} color='secondary'>
+            <FormControl sx={{my:3}}  fullWidth color='secondary'>
                 <InputLabel >Пароль</InputLabel>
                 <FilledInput
                   id="password"
                   type={values.showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={ e => setPassword(e.target.value)}
-                  fullWidth={true}               
+                  fullWidth               
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton
@@ -102,14 +96,14 @@ import { useRouter } from 'next/router'
                 />
               </FormControl>
 
-              <FormControl sx={{my:4}}  fullWidth={true} color='secondary'>
+              <FormControl sx={{my:3}}  fullWidth color='secondary'>
                 <InputLabel>Повторите пароль</InputLabel>
                 <FilledInput
                   id="passwordRepeat"
                   type={values.showPassword ? 'text' : 'password'}
                   value={passwordRepeat}
                   onChange={ e => setPasswordRepeat(e.target.value)}
-                  fullWidth={true}                                  
+                  fullWidth                                
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton
@@ -127,13 +121,8 @@ import { useRouter } from 'next/router'
                 />
               </FormControl>
               <Box sx={{my:5, mx:'auto'}} maxWidth="50%"> 
-                    <Button variant="outlined" fullWidth={true} onClick={(e) => registerHandler(e)} color='secondary'>Зарегистрироваться</Button>
+                    <Button variant="contained" color='secondary' fullWidth onClick={(e) => registerHandler(e)} >Зарегистрироваться</Button>
               </Box>
-              <Box display="flex" alignContent="center">
-                <Typography  fontSize="24" color='secondary' sx={{ml:'auto', mr:3}}>Уже зарегистрированы?</Typography><Box sx={{mr:'auto'}}><Link href="/loginIn">Войти</Link></Box>
-              </Box>           
-          </Box>
-        </Container>
     </>
   )
 }

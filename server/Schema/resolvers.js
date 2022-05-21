@@ -57,7 +57,7 @@ const resolvers = {
                 throw new ApolloError(`Пользователя с почтой ${email} не существует`)
             else{                    
                   if(user.password === password && user.email === email){
-                    const token = jwt.sign({data: {email, password}}, JWT_SECRET, {expiresIn: "24h"})
+                    const token = jwt.sign({data: {email, password, username : user.username, image: user.image}}, JWT_SECRET, {expiresIn: "24h"})
                     user.token = token
                     return user                            
                 } else throw new AuthenticationError('Некорректные данные для входа')
