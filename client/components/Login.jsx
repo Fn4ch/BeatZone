@@ -60,14 +60,6 @@ function LoginIn(){
         
         cookie.set('auth-token', data.loginUser.token, {expires: 4/24})
 
-        dispatch(login({
-          username : data.loginUser.username,
-          email: data.loginUser.email,
-          password: data.loginUser.password,
-          image: data.loginUser.image,          
-          loggedIn: true
-        }))
-
         router.push('/')
       }})
   }
