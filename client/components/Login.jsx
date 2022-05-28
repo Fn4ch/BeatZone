@@ -1,17 +1,13 @@
 import {useState} from 'react'
-import { TextField, Typography, Button, Container, Box, InputAdornment, IconButton, FormControl, FilledInput, InputLabel, FormHelperText} from '@mui/material'
-import { VisibilityOff, Visibility, TryOutlined } from '@mui/icons-material'
-import Link from '../src/Link'
+import { Button, Box, InputAdornment, IconButton, FormControl, FilledInput, InputLabel } from '@mui/material'
+import { VisibilityOff, Visibility } from '@mui/icons-material'
 import {useMutation, gql} from '@apollo/client'
 import { useRouter } from 'next/router'
 import Error from './ErrorMessage'
 import cookie from 'js-cookie'
-import { useDispatch } from 'react-redux'
-import { login } from '../src/features/userSlice'
 
 function LoginIn(){
 
-  const dispatch = useDispatch()
 
   const router = useRouter()
 

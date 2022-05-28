@@ -13,6 +13,7 @@ import MusicPlayer from '../components/player'
 import Layout from '../components/Layout'
 import Image from 'next/image'
 import backImage from '../src/pictures/mountains.jpg'
+import TrackList from '../components/TrackList';
 
 export default function Index(props) { 
     
@@ -35,10 +36,10 @@ export default function Index(props) {
                   <Box sx={{mx:"auto"}} maxWidth="sm">
                     <TextField 
                         sx={{my: 10, md: 10}}
-                        variant="standard"
+                        variant='outlined'
                         id="seach_field"
                         label="Search"
-                        color="secondary"
+                        color="secondary"                        
                         fullWidth={true}
                         InputProps={{
                           startAdornment: (

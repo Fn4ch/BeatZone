@@ -12,6 +12,7 @@ const GET_USERS = gql`
     `
 
 export default function usersPage(){
+    
     const {loading, error, data} = useQuery(GET_USERS) 
     
     console.log(data)

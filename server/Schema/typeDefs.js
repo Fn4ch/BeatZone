@@ -13,21 +13,27 @@ const typeDefs = gql`
         token: String
     } 
 
+    type Comment{
+        id: ID
+        message: String
+        author: User
+    }
 
     type Role {
         id: ID
         value: String!
     }
 
-    type Track {
+    type Track{
         id: ID
-        title: String!
-        author: String!
-        description: String!
+        name: String
+        author: String
+        description: String
         tags: String
         likes: Int
-        audio: String!
-        comment: String
+        image: String
+        audio: String
+        comment: [Comment]
     }
     
     type Playlist {
@@ -42,7 +48,7 @@ const typeDefs = gql`
 
         getAllUsers: [User]
         
-        getAllTracks: [Track!]!
+        getAllTracks: [Track]
 
         getUser(id: ID!) : User
 
@@ -66,7 +72,7 @@ const typeDefs = gql`
         
         loginUser(password: String, email: String) : User
 
-        addTrack(name: String!, author: String, description: String, audio: String, image: String) : Track 
+        addTrack(name: String, author: String, description: String, audio: String, image: String) : Track 
 
         deleteTrack(ID: String): Track
 

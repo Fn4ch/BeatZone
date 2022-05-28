@@ -25,28 +25,25 @@ async function startServer(){
     app.use(express.json({ limit: '50mb' }))
     app.use(cors(corsOptions))
   
-
-    const context = async request => {
-        let authToken = null
-        let currentUser = null
-        const { headers } = request.req
-        try {
-            authToken = headers.authorization || ""
-            if (authToken) {
-            currentUser = jwt.verify(authToken, JWT_SECRET);
-            }
-            } catch (error) {
-            throw new AuthenticationError(
-            "Authentication token is invalid, please log in"
-            )}
-        return { request, currentUser }
-    }
-
     const apolloServer = new ApolloServer({
         typeDefs,
         resolvers,
         csrfPrevention: true, 
-        context
+        context: ({req}) =>{ 
+            const ctx = email = {email: null}
+            try{
+                if(req.headers["auth-token"] )
+                {
+                    const token = jwt.verify(
+                        req.headers["auth-token"],
+                        JWT_SECRET
+                    )
+                    ctx.email = token.data
+                }                
+            }
+            catch (e) {} 
+            return ctx     
+         } 
     })    
        
     await apolloServer.start()
@@ -60,7 +57,7 @@ async function startServer(){
     })
     console.log("mongoose conected...")
     
-    app.listen( port, ()=> console.log(`Server started: http://localhost:${port}`))
+    app.listen( port , ()=> console.log(`Server started: http://localhost:${port}`))
 
 
 }

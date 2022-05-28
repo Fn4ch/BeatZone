@@ -63,8 +63,14 @@ const resolvers = {
                 } else throw new AuthenticationError('Некорректные данные для входа')
             }
         },    
-        addTrack : async (parent, args, context) => {
-            const track = new Track({args})
+        addTrack : async (parent, data) => {
+            const track = new Track({
+                name: data.name,
+                description: data.description,
+                audio: data.audio,
+                image: data.image,
+                author: data.author
+            })
             await track.save()
             return track
         },

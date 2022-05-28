@@ -5,13 +5,14 @@ import { Search, UploadFile }  from '@mui/icons-material'
 import { Notifications}  from '@mui/icons-material'
 import MenuDrawer from './Drawer'
 import Link from '../src/Link'
-import Upload from '../components/Upload'
 import { useSelector } from 'react-redux'
 import { selectUser } from '../src/features/userSlice'
 import { useRouter } from 'next/router'
 
 
+
 export default function NavBar(){
+
 
   return(
       <AppBar position="fixed" color='transparent'>
@@ -19,7 +20,7 @@ export default function NavBar(){
             <Link href="/">
                 <Typography variant="h4" color="secondary">BeatZone</Typography>
             </Link>
-                <Box flexGrow={1}>
+                <Box flexGrow={1} display='flex' flexDirection='row'>
                   <TextField
                     sx={{mx:3, visibility: {sm:'hidden', xs:'hidden', md:'visible', lg:'visible'}}}
                     id='searchField'
@@ -35,10 +36,15 @@ export default function NavBar(){
                         </InputAdornment>
                       ),}}    
                   />
-                </Box>
-                <Stack direction='row'>
+                  <Link href="/tracks">
+                    <Typography variant="h5" color="secondary">Tracks</Typography>
+                  </Link>
+                </Box>                
+                <Stack direction='row' alignItems='center' spacing={2} >
                   <Box sx={{visibility: {sm:'hidden', xs:'hidden', md:'visible', lg:'visible'}}}>
-                    <Upload/>
+                    <Link href='/upload'>
+                      <UploadFile color='secondary' fontSize='large'/>
+                    </Link>
                   </Box>     
                   <IconButton >
                     <MenuDrawer />

@@ -1,5 +1,5 @@
 import { DockRounded, Menu } from '@mui/icons-material'
-import { SwipeableDrawer, List, ListItem, ListItemText, Box, Divider, Switch, FormControlLabel, Stack, Avatar, Typography} from '@mui/material'
+import { SwipeableDrawer, List, ListItem, ListItemText, Box, Divider, Switch, FormControlLabel, Stack, Avatar, Typography, getStepLabelUtilityClass} from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import cookie from 'js-cookie'
@@ -7,6 +7,7 @@ import { useDispatch } from 'react-redux'
 import { logout } from '../src/features/userSlice'
 import jwt_decode from 'jwt-decode'
 import { login } from '../src/features/userSlice'
+import { MapStateToProps } from 'react-redux'
 
 export default function MenuDrawer(){
 
@@ -21,17 +22,17 @@ export default function MenuDrawer(){
 
     useEffect(()=>{
         const token = cookie.get('auth-token')
-        const decoded = jwt_decode(token)
-
-        dispatch(
-            login({
-            username: decoded.data.username,
-            email: decoded.data.email,
-            image: decoded.data.image,
-            loggedIn: true
-            }
-        ))
-        
+        if(token){
+            const decoded = jwt_decode(token)       
+            dispatch(
+                login({
+                username: decoded.data.username,
+                email: decoded.data.email,
+                image: decoded.data.image,
+                loggedIn: true
+                }
+            ))
+        }       
 
     }, [])
     
@@ -76,7 +77,7 @@ export default function MenuDrawer(){
                    <ListItem button onClick={() =>{
                         cookie.remove('auth-token')
                         dispatch(logout())
-                        router.push('login')
+                        router.push('/authorize')
                     }}>
                        <ListItemText >Выход</ListItemText>
                    </ListItem>
