@@ -50,20 +50,11 @@ const typeDefs = gql`
         
         getAllTracks: [Track]
 
-        getUser(id: ID!) : User
+        getUser(username: String) : User
 
-        getUserTracks(author: ID!) : [Track!]!
-    }
-    #Inputs
-    input createUserInput{
-        username: String
-        password: String
-        email: String
-    }
-    
-    input loginInput{
-        email: String
-        password: String
+        getUserTracks(author: String) : [Track]
+
+        getPlaylists: [Playlist]
     }
 
     #Mutations
@@ -76,7 +67,9 @@ const typeDefs = gql`
 
         deleteTrack(ID: String): Track
 
-        addPlaylist(title: String, Track: String, author: String): Playlist
+        addPlaylist(title: String, author: String): Playlist
+
+        playlistAddTrack(title: String, Track: String): Playlist
     }
 
 `

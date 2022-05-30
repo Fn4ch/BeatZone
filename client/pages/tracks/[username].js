@@ -1,43 +1,73 @@
-import Layout  from '../components/Layout'
-import { gql } from "@apollo/client"
-import client from '../components/client'
 import { Container, List, ListItem, Typography, Box, Stack, Paper, Button} from '@mui/material'
 import { Favorite, FavoriteBorder, Add} from '@mui/icons-material'
-import Image from "next/image"
-import {useState} from 'react'
+import Layout from '../../components/Layout'
+import client from '../../components/client'
+import { gql } from '@apollo/client'
+import Image from 'next/image'
+import { useState } from 'react'
+import {useRouter} from 'next/router'
 
-export async function getServerSideProps()
-{
+
+
+export async function getStaticPaths() {
+
     const { data } =  await client.query({
         query: gql`
-        query getAllTracks{
-            getAllTracks{
-                id
-                author
-                name
-                image           
+        query getAllUsers{
+            getAllUsers{
+                username    
             } 
         }
-        `        
+        `    
     })
+    const users = data.getAllUsers
+    const paths = users.map((user) => ({params: {username: user.username},}))
+    return{        
+        paths,
+        fallback: false
+    }
+}
+
+export async function getStaticProps({params})
+{
+
+    const { data } =  await client.query({
+        query: gql`
+        query getUerTracks($author: String){
+            getUserTracks(author: $author){
+                image 
+                name
+                audio 
+                author                      
+            } 
+        }        
+        `, variables: {author: params.username}},)
+
     return{
         props: {
-            tracks: data.getAllTracks
+            tracks : data.getUserTracks
         }
     }
 }
 
-export default function tracksPage({tracks}){
 
-const [liked, setLiked] = useState(true)
+
+const userTracksPage = ({tracks}) => {
+
+    const [liked, setLiked] = useState(true)
 
 const likeHandler = (e) =>{
     setLiked(!liked)
 }
 
-    return(
-        <Layout>
-            <Container width="lg" sx={{mt:20}}>
+const router = useRouter()
+const {username} = router.query
+console.log(username)
+
+return(
+    <Layout>
+        <Typography marginTop={12} align="center" variant="h3">Треки пользователя {username}</Typography>
+            <Container width="lg" sx={{mt:8}}>
                 <Box width='100%'>
                     <List sx={{width: '100%'}}>
                         {tracks.map((track) => 
@@ -65,6 +95,8 @@ const likeHandler = (e) =>{
                     </List>
                 </Box>
         </Container>
-        </Layout>
-    )
+    </Layout>
+)
 }
+
+export default userTracksPage

@@ -24,9 +24,7 @@ const clientSideEmotionCache = createEmotionCache()
 export default function MyApp(props) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps} = props
 
-
   const [user, setUser] = useState(null)
-
   
   const router = useRouter()
 

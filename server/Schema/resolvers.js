@@ -14,7 +14,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret"
 const resolvers = {
     Query: {     
 
-        getAllUsers: async (_, _args, context) => {
+        getAllUsers: async (_, _args) => {
             return await User.find()         
         },
 
@@ -22,12 +22,16 @@ const resolvers = {
             return await Track.find()
         },
 
-        getUser : async (_, ID, context) =>{
-            return await Track.findById({_id: ID})
+        getUser : async (_, {username}, context) =>{
+            console.log(context)
+            return await User.findOne({username})
         },
 
-        getUserTracks : async (_, author, context) =>{
-            return await Track.findById(author)
+        getUserTracks : async (_, {author}, context) =>{
+            return await Track.find({author: author})
+        },
+        getPlaylists : async (_, _args)=>{
+            return await Playlist.find()
         }
     },
     Mutation: {
@@ -57,29 +61,29 @@ const resolvers = {
                 throw new ApolloError(`Пользователя с почтой ${email} не существует`)
             else{                    
                   if(user.password === password && user.email === email){
-                    const token = jwt.sign({data: {email, password, username : user.username, image: user.image}}, JWT_SECRET, {expiresIn: "24h"})
+                    const token = jwt.sign({data: user}, JWT_SECRET, {expiresIn: "24h"})
                     user.token = token
                     return user                            
                 } else throw new AuthenticationError('Некорректные данные для входа')
             }
         },    
-        addTrack : async (parent, data) => {
+        addTrack : async (parent, data, context) => {
             const track = new Track({
                 name: data.name,
                 description: data.description,
                 audio: data.audio,
                 image: data.image,
-                author: data.author
+                author: context.author
             })
             await track.save()
             return track
         },
         deleteTrack : async (parent, args) => {
-            await Track.findByIdAndDelete(args)
+            await Track.findOneAndDelete()
             await save()
             return Track
         },
-        addPlaylist : async (parent, args) => {
+        addPlaylist : async (parent, args, context) => {
             const playlist = new playlist({args})
             await save()
             return Playlist

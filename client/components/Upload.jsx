@@ -6,8 +6,8 @@ import { gql, useMutation, useReactiveVar } from '@apollo/client'
 import { styled } from '@mui/material/styles'
 import { Image } from 'cloudinary-react'
 import trackTemplate from '../src/pictures/trackTemplate.png'
-import { selectUser } from '../src/features/userSlice'
 import { useSelector } from 'react-redux'
+import {useRouter} from 'next/router'
 
 
 const UploadTrack = () =>{  
@@ -18,6 +18,8 @@ const UploadTrack = () =>{
 
     const [drag, setDrag] = useState(false)
 
+    const router = useRouter()
+
     const [trackAudio, setTrackAudio] = useState()
     const [trackImage, setTrackImage] = useState()
 
@@ -26,8 +28,7 @@ const UploadTrack = () =>{
 
     const [trackData, setTrackData] = useState({
         name: '',
-        description: '',
-        author: ''
+        description: ''
     })
 
     useEffect(()=>{
@@ -92,9 +93,9 @@ const UploadTrack = () =>{
         })
         .then(r => r.json())
         .then(result =>  
-        addTrack({variables: {name: trackData.name, description: trackData.description, author: trackData.author, audio: result.url, image: imageUrl}, 
+        addTrack({variables: {name: trackData.name, description: trackData.description, audio: result.url, image: imageUrl}, 
             onCompleted: () => {
-                setOpen(false)
+                router.push('/')
             }
         }))
     }
@@ -102,15 +103,14 @@ const UploadTrack = () =>{
 
     const uploadHandler = (e) =>{
         e.preventDefault()
-        setTrackData({author: currentUser.username})
-        uploadImage() 
+        uploadTrack() 
     }
 
     const imagePath = acceptedFiles.map(file => <Typography marginLeft={4} key={file.path} >{file.path}</Typography>)
 
     const ADD_TRACK = gql`
-        mutation addTrack($name: String, $author: String, $description: String, $audio: String, $image: String){
-            addTrack(name: $name, author: $author, description: $description, audio: $audio, image: $image){
+        mutation addTrack($name: String, $description: String, $audio: String, $image: String){
+            addTrack(name: $name, description: $description, audio: $audio, image: $image){
                 name
                 author
             }
@@ -119,7 +119,7 @@ const UploadTrack = () =>{
     const [addTrack, {loading, data, error}] = useMutation(ADD_TRACK)
 
     return(     
-        <Container width='sm' alignItems='center' sx={{marginTop:8}}>
+        <Container width='sm' sx={{marginTop:8}}>
                 <Box marginTop={24}  alignItems='center'>
                     <Box margin={4} display='flex' flexDirection='row'>                                
                         <div {...getRootProps()}>
@@ -152,7 +152,7 @@ const UploadTrack = () =>{
                         </List>                    
                 </Box>
                 <Box sx={{my:5, mx:'auto'}} maxWidth="30%">
-                <Button sx={{mx:'auto'}} variant="contained" fullWidth color='secondary'>Загрузить</Button>
+                <Button sx={{mx:'auto'}} onClick={uploadHandler} variant="contained" fullWidth color='secondary'>Загрузить</Button>
             </Box>     
         </Container>
     )

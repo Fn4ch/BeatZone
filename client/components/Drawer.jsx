@@ -12,28 +12,29 @@ import { MapStateToProps } from 'react-redux'
 export default function MenuDrawer(){
 
 
-    const [open, setOpen] = useState(false)
-
-    let username = 'artur'
+    const [open, setOpen] = useState(false)    
 
     const router = useRouter()
 
     const dispatch = useDispatch()
 
+    const [username, setUsername] = useState()
+
     useEffect(()=>{
         const token = cookie.get('auth-token')
         if(token){
-            const decoded = jwt_decode(token)       
+            const decoded = jwt_decode(token)
+            setUsername(decoded.data.username)    
             dispatch(
                 login({
                 username: decoded.data.username,
                 email: decoded.data.email,
                 image: decoded.data.image,
+                playlists: decoded.data.playlists,
                 loggedIn: true
                 }
             ))
-        }       
-
+        }
     }, [])
     
     return(
@@ -59,13 +60,13 @@ export default function MenuDrawer(){
                             <Typography variant='h5'>{username}</Typography>
                         </Stack>
                     </ListItem>
-                    <ListItem button onClick={() =>{ router.push('/profile')}}>
+                    <ListItem button onClick={() =>{ router.push(`/user/${username}`)}}>
                         <ListItemText primary={'Профиль'}/>
                     </ListItem>
-                    <ListItem button onClick={() =>{ router.push(`/${user}/tracks`)}}>
-                        <ListItemText primary={'Треки'}/>
+                    <ListItem button onClick={() =>{ router.push(`/tracks/${username}`)}}>
+                        <ListItemText primary={'Мои треки'}/>
                     </ListItem>
-                    <ListItem button onClick={() =>{router.push(`/${user}/playlists}`)}}>
+                    <ListItem button onClick={() =>{router.push(`/playlists/${username}`)}}>
                         <ListItemText primary={'Плейлисты'}/>
                     </ListItem>
                     <ListItem  button onClick={() =>{}}>

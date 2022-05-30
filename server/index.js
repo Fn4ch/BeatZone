@@ -15,34 +15,37 @@ async function startServer(){
     const port = 5000
 
     const app = express()
-    app.use(cookieParser())
-
+    
     var corsOptions = {
     origin: 'http://localhost:3000',
-    credentials: true 
+    credentials: 'true' 
     }
 
-    app.use(express.json({ limit: '50mb' }))
     app.use(cors(corsOptions))
+
+    app.use(cookieParser())
+    app.use(express.json({ limit: '50mb' }))
+    
   
     const apolloServer = new ApolloServer({
         typeDefs,
         resolvers,
         csrfPrevention: true, 
         context: ({req}) =>{ 
-            const ctx = email = {email: null}
+            const ctx = username = {username: null}
             try{
-                if(req.headers["auth-token"] )
+                if(req.headers["authorization"] )
                 {
                     const token = jwt.verify(
-                        req.headers["auth-token"],
+                        req.headers["authorization"],
                         JWT_SECRET
                     )
-                    ctx.email = token.data
+                    ctx.username = token.data
+                    console.log(token.data)
                 }                
             }
             catch (e) {} 
-            return ctx     
+            return ctx
          } 
     })    
        
