@@ -1,9 +1,6 @@
 import { Favorite, FavoriteBorder } from '@mui/icons-material'
 import {List, Container, Box, ListItem, Typography} from '@mui/material'
-import { Image } from 'next'
-import { gql, useQuery }from '@apollo/client'
-import client from '../components/client'
-import { useEffect, useState } from 'react'
+import {gql} from '@apollo/client'
 
 
 const GET_USERS = gql`
@@ -28,25 +25,6 @@ const { data } =  await client.query({
     `        
 })
 */
-export async function GetInitialProps()
-{
-    const { data } =  await client.query({
-        query: gql`
-        query getAllTracks{
-            getAllTracks{
-                id
-                author
-                name                
-            } 
-        }
-        `        
-    })
-    return{
-        props: {
-            tracks: data.getAllTracks
-        }
-    }
-}
 
 //const {data, loading, error} = useQuery(GET_USERS ,{onCompleted: ()=> {console.log(data)}})
 

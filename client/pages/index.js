@@ -53,7 +53,6 @@ export default function Index(props) {
             </Container>
           </Container>
         </Layout> 
-        <MusicPlayer/>
       </ThemeProvider>
     </>
   )

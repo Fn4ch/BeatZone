@@ -4,7 +4,11 @@ import client from '../components/client'
 import { Container, List, ListItem, Typography, Box, Stack, Paper, Button} from '@mui/material'
 import { Favorite, FavoriteBorder, Add} from '@mui/icons-material'
 import Image from "next/image"
-import {useState} from 'react'
+import { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { play , stop} from '../src/features/playerSlice'
+import Player from '../components/player'
+
 
 export async function getServerSideProps()
 {
@@ -15,7 +19,8 @@ export async function getServerSideProps()
                 id
                 author
                 name
-                image           
+                image
+                audio
             } 
         }
         `        
@@ -29,22 +34,39 @@ export async function getServerSideProps()
 
 export default function tracksPage({tracks}){
 
+const dispatch = useDispatch()
+
 const [liked, setLiked] = useState(true)
+const [track, setTrack] = useState(null)
 
 const likeHandler = (e) =>{
     setLiked(!liked)
 }
 
+useEffect(()=>{
+    if(track)
+    dispatch(play({
+        trackName: track.name,
+        trackAuthor: track.author,
+        trackImage: track.image,
+        trackAudio: track.audio,
+        trackPosition: 0,
+        isPaused: true
+    }
+    ))
+},[track])
+
     return(
         <Layout>
-            <Container width="lg" sx={{mt:20}}>
+            <Typography marginTop={12} align="center" variant="h3">Треки</Typography>
+            <Container width="lg" sx={{mt:8}}>
                 <Box width='100%'>
                     <List sx={{width: '100%'}}>
                         {tracks.map((track) => 
                         (<ListItem key={track.id}>
                             <Paper sx={{width:'100%'}} color='secondary'>
                                 <Stack direction='row' alignItems='center' justifyItems='flex-start' sx={{width: '100%'}} margin={1} marginBottom={0}>
-                                        <Box onClick={()=>{}}>
+                                        <Box onClick={()=>setTrack(track)} key={track.id}>
                                             <Image src={track.image} alt="Img" width="60" height="60"></Image>
                                         </Box>
                                         <Box flexDirection="row" alignSelf='center' marginLeft={3} flexGrow={1}>

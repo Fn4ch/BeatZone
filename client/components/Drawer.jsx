@@ -7,7 +7,6 @@ import { useDispatch } from 'react-redux'
 import { logout } from '../src/features/userSlice'
 import jwt_decode from 'jwt-decode'
 import { login } from '../src/features/userSlice'
-import { MapStateToProps } from 'react-redux'
 
 export default function MenuDrawer(){
 

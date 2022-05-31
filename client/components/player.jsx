@@ -1,4 +1,3 @@
-import {useState} from 'react'
 import { styled, useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -12,6 +11,10 @@ import FastRewindRounded from '@mui/icons-material/FastRewindRounded'
 import VolumeUpRounded from '@mui/icons-material/VolumeUpRounded'
 import VolumeDownRounded from '@mui/icons-material/VolumeDownRounded'
 
+import { selectPlayer } from '../src/features/playerSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect, useState } from 'react'
+import { play, pause } from '../src/features/playerSlice'
 
 const Widget = styled('div')(({ theme }) => ({
   padding: 16,
@@ -45,39 +48,82 @@ const TinyText = styled(Typography)({
   letterSpacing: 0.2,
 })
 
-export default function MusicPlayer() {
+const MusicPlayer = () => {
+  
+  
   const theme = useTheme();
-  const duration = 200 // seconds
-  const [position, setPosition] = useState(32)
-  const [paused, setPaused] = useState(false)
+  const [duration, setDuration] = useState(0)
+  const [position, setPosition] = useState(0)
+  const [paused, setPaused] = useState(true)
+  const [author, setAuthor] = useState('')
+  const [trackName, setTrackName] = useState('')
+  const [trackAudio, setTrackAudio] = useState()
+  const [trackImage, setTrackImage] = useState('')
+  
+  
+  const dispatch = useDispatch()
+  const player = useSelector(selectPlayer)
+  
+  useEffect(()=>{
+    if(player != null){
+    setTrackName(player.trackName)
+    setAuthor(player.trackAuthor)
+    setTrackImage(player.trackImage)
+    setTrackAudio(player.trackAudio)
+    setPaused(player.isPaused)    
+    }
+    console.log(trackName, author, trackImage, position, duration, trackAudio, 'Плеер')
+  },[player])
+  
+  useEffect(()=>{
+    if(player != null){
+      setPosition(player.trackPosition)
+    }
+    console.log(trackName, author, trackImage, position, duration, trackAudio, 'Dispatch')
+  },[dispatch]) 
 
 
-  function formatDuration(value) {
-    const minute = Math.floor(value / 60);
-    const secondLeft = value - minute * 60;
-    return `${minute}:${secondLeft < 9 ? `0${secondLeft}` : secondLeft}`;
+  const pauseHandler = () => { 
+    if(trackAudio != null){    
+    const audio = new Audio(player.trackAudio)
+    paused ? audio.play() : audio.pause()     
+    paused ? dispatch(pause({
+      isPaused: false 
+    }))  : dispatch(pause({
+      isPaused: true
+    })) 
+    }
   }
+  
+  
+
 
   const mainIconColor = theme.palette.mode === 'dark' ? '#fff' : '#000';
   const lightIconColor =
     theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)'
 
+    const formatDuration =(value) => {
+      const minute = Math.floor(value / 60);
+      const secondLeft = value - minute * 60;
+      return `${minute}:${secondLeft < 9 ? `0${secondLeft}` : secondLeft}`;
+    }
+
   return (
-    <Box maxWidth='xl'  sx={{ overflow: 'hidden', mx:'auto'}}>
+    <Box maxWidth='xl' sx={{ overflow: 'hidden', mx:'auto'}}>
       <Widget>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <CoverImage>
             <img
               alt="can't win - Chilling Sunday"
-              src=""
+              src={trackImage}
             />
           </CoverImage>
           <Box sx={{ ml: 1.5, minWidth: 0 }}>
-            <Typography variant="caption" color="text.secondary" fontWeight={500}>
-              Obama
+            <Typography name='TrackName' variant="caption" color="text.secondary" fontWeight={500}>
+              {trackName}
             </Typography>
             <Typography noWrap>
-              <b>if u was a man </b>
+              <b>{author}</b>
             </Typography>
             <Typography noWrap letterSpacing={-0.25}>              
             </Typography>            
@@ -159,7 +205,10 @@ export default function MusicPlayer() {
           </IconButton>
           <IconButton
             aria-label={paused ? 'play' : 'pause'}
-            onClick={() => setPaused(!paused)}
+            onClick={() => {
+              setPaused(!paused)
+              pauseHandler()
+            }}
           >
             {paused ? (
               <PlayArrowRounded
@@ -178,3 +227,5 @@ export default function MusicPlayer() {
     </Box>
   )
 }
+
+export default MusicPlayer

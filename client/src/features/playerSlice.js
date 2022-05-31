@@ -9,8 +9,8 @@ export const playerSlice = createSlice({
         play: (state, action) => {
             state.player = action.payload
         },
-        pause: (state) => {
-            state.player = action.payload 
+        pause: (state, action) => {
+            state.player.isPaused = action.payload.isPaused
         }        
     }
 })
