@@ -1,6 +1,7 @@
 import NavBar from './NavBar'
 import Footer from './Footer'
 import MusicPlayer from './player'
+import { Box } from '@mui/material'
 
 export default function Layout({children}){
     return(
@@ -8,8 +9,10 @@ export default function Layout({children}){
             <NavBar/>      
                 <main>
                     {children}
-                </main>
-            <MusicPlayer/>
+                    <Box height={400}></Box>
+                </main>                
+                <Footer/>
+            <MusicPlayer/>            
         </>
     )
 }

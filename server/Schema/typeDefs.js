@@ -69,7 +69,7 @@ const typeDefs = gql`
 
         addPlaylist(title: String, author: String): Playlist
 
-        playlistAddTrack(title: String, Track: String): Playlist
+        addTrackToPlaylist(title: String, Track: String, author: String): Playlist
     }
 
 `

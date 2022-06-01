@@ -95,26 +95,24 @@ const MusicPlayer = () => {
     }
   }
   
-  
-
 
   const mainIconColor = theme.palette.mode === 'dark' ? '#fff' : '#000';
   const lightIconColor =
     theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)'
 
-    const formatDuration =(value) => {
-      const minute = Math.floor(value / 60);
-      const secondLeft = value - minute * 60;
-      return `${minute}:${secondLeft < 9 ? `0${secondLeft}` : secondLeft}`;
-    }
+  const formatDuration =(value) => {
+    const minute = Math.floor(value / 60);
+    const secondLeft = value - minute * 60;
+    return `${minute}:${secondLeft < 9 ? `0${secondLeft}` : secondLeft}`;
+  }
 
   return (
-    <Box maxWidth='xl' sx={{ overflow: 'hidden', mx:'auto'}}>
+    <Box sx={{position: 'fixed', bottom: 0, width: '100%', height: 240, mb: -2 }}>
       <Widget>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <CoverImage>
             <img
-              alt="can't win - Chilling Sunday"
+              alt=""
               src={trackImage}
             />
           </CoverImage>

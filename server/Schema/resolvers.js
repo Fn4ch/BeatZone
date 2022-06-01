@@ -19,6 +19,7 @@ const resolvers = {
         },
 
         getAllTracks : async (_, _args, context) => {
+            console.log(context)
             return await Track.find()
         },
 
@@ -73,21 +74,28 @@ const resolvers = {
                 description: data.description,
                 audio: data.audio,
                 image: data.image,
-                author: context.author
+                author: data.author
             })
             await track.save()
             return track
         },
         deleteTrack : async (parent, args) => {
-            await Track.findOneAndDelete()
+            const track = await Track.findOneAndDelete()
             await save()
-            return Track
+            return track
         },
         addPlaylist : async (parent, args, context) => {
-            const playlist = new playlist({args})
-            await save()
-            return Playlist
+            const playlist = new Playlist({args})
+            await playlist.save()
+            return playlist
         },
+        addTrackToPlaylist: async (parent, {title, author, Track}, context) => {
+           const currentPlaylist = await Playlist.find({title: title})
+            currentPlaylist.Track = Track
+            currentPlaylist.title = title
+            await currentPlaylist.save()
+            return currentPlaylist
+        }
     }
 }
 

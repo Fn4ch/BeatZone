@@ -6,12 +6,11 @@ import client from '../../components/client'
 import { gql } from '@apollo/client'
 
 export async function getStaticPaths() {
-
     const { data } =  await client.query({
         query: gql`
         query getAllUsers{
             getAllUsers{
-                username    
+                username
             } 
         }
         `    

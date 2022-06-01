@@ -2,12 +2,13 @@ import {Typography, IconButton, Box, Input, List, ListItem, Button, TextField, S
 import { useState, useCallback, useEffect } from 'react'
 import { UploadFile } from '@mui/icons-material'
 import { useDropzone } from 'react-dropzone'
-import { gql, useMutation, useReactiveVar } from '@apollo/client'
+import { ApolloError, gql, useMutation, useReactiveVar } from '@apollo/client'
 import { styled } from '@mui/material/styles'
 import { Image } from 'cloudinary-react'
 import trackTemplate from '../src/pictures/trackTemplate.png'
 import { useSelector } from 'react-redux'
 import {useRouter} from 'next/router'
+import { selectUser } from '../src/features/userSlice'
 
 
 const UploadTrack = () =>{  
@@ -19,11 +20,12 @@ const UploadTrack = () =>{
     const [drag, setDrag] = useState(false)
 
     const router = useRouter()
+    const currentUser = useSelector(selectUser)
+
 
     const [trackAudio, setTrackAudio] = useState()
     const [trackImage, setTrackImage] = useState()
 
-    const [audioUrl, setAudioUrl] = useState()
     const [imageUrl, setImageUrl] = useState()
 
     const [trackData, setTrackData] = useState({
@@ -69,31 +71,33 @@ const UploadTrack = () =>{
     // if(loading) return 'Submitting...'
     // if(error) return `'Submition error!' ${error.message}`
 
-    async function uploadTrack(){
+    function uploadImage(){
         const formData = new FormData()
         formData.append('file', trackImage )
         formData.append('upload_preset', 'beatzone')
-        await fetch('https://api.cloudinary.com/v1_1/dxegpqszm/image/upload', {
+        fetch('https://api.cloudinary.com/v1_1/dxegpqszm/image/upload', {
             method: 'POST',
             body: formData
         }).then(r => r.json())
-        .then(result => {
-            setImageUrl(result.url)
-            uploadAudio()
+        .then(result => setImageUrl(result.url)).then(()=>{
+            if(imageUrl != null){
+                uploadAudio()
+            }
+            else throw new ApolloError
         })
     }
 
-    async function uploadAudio(){
+    function uploadAudio(){
         const formData = new FormData()
         formData.append('file', trackAudio )
         formData.append('upload_preset', 'beatzone')
-        await fetch('https://api.cloudinary.com/v1_1/dxegpqszm/video/upload', {
+        fetch('https://api.cloudinary.com/v1_1/dxegpqszm/video/upload', {
             method: 'POST',
             body: formData
         })
         .then(r => r.json())
         .then(result =>  
-        addTrack({variables: {name: trackData.name, description: trackData.description, audio: result.url, image: imageUrl}, 
+        addTrack({variables: {name: trackData.name, description: trackData.description, audio: result.url, image: imageUrl, author: currentUser.username}, 
             onCompleted: () => {
                 router.push('/')
             }
@@ -103,14 +107,14 @@ const UploadTrack = () =>{
 
     const uploadHandler = (e) =>{
         e.preventDefault()
-        uploadTrack() 
+        uploadImage() 
     }
 
     const imagePath = acceptedFiles.map(file => <Typography marginLeft={4} key={file.path} >{file.path}</Typography>)
 
     const ADD_TRACK = gql`
-        mutation addTrack($name: String, $description: String, $audio: String, $image: String){
-            addTrack(name: $name, description: $description, audio: $audio, image: $image){
+        mutation addTrack($name: String, $description: String, $author: String $audio: String, $image: String){
+            addTrack(name: $name, description: $description, author: $author audio: $audio, image: $image){
                 name
                 author
             }

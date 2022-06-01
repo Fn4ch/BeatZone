@@ -65,7 +65,7 @@ export default function MenuDrawer(){
                     <ListItem button onClick={() =>{ router.push(`/tracks/${username}`)}}>
                         <ListItemText primary={'Мои треки'}/>
                     </ListItem>
-                    <ListItem button onClick={() =>{router.push(`/playlists/${username}`)}}>
+                    <ListItem button onClick={() =>{router.push(`/playlists`)}}>
                         <ListItemText primary={'Плейлисты'}/>
                     </ListItem>
                     <ListItem  button onClick={() =>{}}>

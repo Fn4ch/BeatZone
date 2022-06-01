@@ -26,13 +26,14 @@ async function startServer(){
     app.use(cookieParser())
     app.use(express.json({ limit: '50mb' }))
     
-  
+     
+
     const apolloServer = new ApolloServer({
         typeDefs,
         resolvers,
-        csrfPrevention: true, 
+        csrfPrevention: true,
         context: ({req}) =>{ 
-            const ctx = username = {username: null}
+            const ctx = username 
             try{
                 if(req.headers["authorization"] )
                 {
@@ -47,6 +48,7 @@ async function startServer(){
             catch (e) {} 
             return ctx
          } 
+        
     })    
        
     await apolloServer.start()
