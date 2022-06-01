@@ -6,7 +6,7 @@ import { Favorite, FavoriteBorder, Add} from '@mui/icons-material'
 import Image from "next/image"
 import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { play , stop} from '../src/features/playerSlice'
+import { trackList, trackIndex } from '../src/features/playerSlice'
 import Player from '../components/player'
 
 
@@ -44,17 +44,33 @@ const likeHandler = (e) =>{
 }
 
 useEffect(()=>{
-    if(track)
-    dispatch(play({
-        trackName: track.name,
-        trackAuthor: track.author,
-        trackImage: track.image,
-        trackAudio: track.audio,
-        trackPosition: 0,
-        isPaused: true
+    dispatch(trackList({
+        tracks
     }
     ))
-},[track])
+},[])
+
+
+const [currentSongIndex,setCurrentSongIndex] = useState(0)
+const [nextSongIndex,setNextSongIndex] = useState(currentSongIndex + 1)
+const [prevSongIndex,setPrevSongIndex] = useState(currentSongIndex + -1)
+
+useEffect(()=>{
+    setNextSongIndex(()=>{
+    if (currentSongIndex + 1 > tracks.length - 1 ){
+      return 0          
+    } else{
+      return currentSongIndex + 1      
+    }    
+    dispatch(trackIndex({
+        prevSongIndex: prevSongIndex,
+        currentSongIndex: currentSongIndex,
+        nextSongIndex: nextSongIndex
+        }))
+  })
+  },[currentSongIndex])
+
+
 
     return(
         <Layout>
@@ -66,7 +82,10 @@ useEffect(()=>{
                         (<ListItem key={track.id}>
                             <Paper sx={{width:'100%'}} color='secondary'>
                                 <Stack direction='row' alignItems='center' justifyItems='flex-start' sx={{width: '100%'}} margin={1} marginBottom={0}>
-                                        <Box onClick={()=>setTrack(track)} key={track.id}>
+                                        <Box onClick={()=>{
+                                            setTrack(track)
+                                            setCurrentSongIndex()
+                                        }} key={track.id}>
                                             <Image src={track.image} alt="Img" width="60" height="60"></Image>
                                         </Box>
                                         <Box flexDirection="row" alignSelf='center' marginLeft={3} flexGrow={1}>

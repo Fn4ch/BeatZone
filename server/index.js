@@ -33,7 +33,7 @@ async function startServer(){
         resolvers,
         csrfPrevention: true,
         context: ({req}) =>{ 
-            const ctx = username 
+            const ctx = username = {username: null}
             try{
                 if(req.headers["authorization"] )
                 {

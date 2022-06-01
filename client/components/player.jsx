@@ -11,9 +11,9 @@ import FastRewindRounded from '@mui/icons-material/FastRewindRounded'
 import VolumeUpRounded from '@mui/icons-material/VolumeUpRounded'
 import VolumeDownRounded from '@mui/icons-material/VolumeDownRounded'
 
-import { selectPlayer } from '../src/features/playerSlice'
+import { selectTrackIndex, selectTrackList } from '../src/features/playerSlice'
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { play, pause } from '../src/features/playerSlice'
 
 const Widget = styled('div')(({ theme }) => ({
@@ -49,50 +49,30 @@ const TinyText = styled(Typography)({
 })
 
 const MusicPlayer = () => {
-  
-  
   const theme = useTheme();
   const [duration, setDuration] = useState(0)
   const [position, setPosition] = useState(0)
-  const [paused, setPaused] = useState(true)
-  const [author, setAuthor] = useState('')
-  const [trackName, setTrackName] = useState('')
-  const [trackAudio, setTrackAudio] = useState()
-  const [trackImage, setTrackImage] = useState('')
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [tracks, setTracks] = useState([])
   
   
   const dispatch = useDispatch()
-  const player = useSelector(selectPlayer)
-  
-  useEffect(()=>{
-    if(player != null){
-    setTrackName(player.trackName)
-    setAuthor(player.trackAuthor)
-    setTrackImage(player.trackImage)
-    setTrackAudio(player.trackAudio)
-    setPaused(player.isPaused)    
-    }
-    console.log(trackName, author, trackImage, position, duration, trackAudio, 'Плеер')
-  },[player])
-  
-  useEffect(()=>{
-    if(player != null){
-      setPosition(player.trackPosition)
-    }
-    console.log(trackName, author, trackImage, position, duration, trackAudio, 'Dispatch')
-  },[dispatch]) 
+  const trackList = useSelector(selectTrackList)
+  const index = useSelector(selectTrackIndex)
 
+  useEffect(()=>{
+    setTracks(tracks)
+    console.log(tracks)
+  },[trackList])
 
-  const pauseHandler = () => { 
-    if(trackAudio != null){    
-    const audio = new Audio(player.trackAudio)
-    paused ? audio.play() : audio.pause()     
-    paused ? dispatch(pause({
-      isPaused: false 
-    }))  : dispatch(pause({
-      isPaused: true
-    })) 
-    }
+  const pauseHandler = () =>{      
+    isPlaying ? HTMLAudioElement.play() : HTMLAudioElement.pause()
+    isPlaying ? dispatch(pause({
+      isPlaying: false
+    })) :
+    dispatch(pause({
+      isPlaying: true
+    }))
   }
   
 
@@ -113,15 +93,15 @@ const MusicPlayer = () => {
           <CoverImage>
             <img
               alt=""
-              src={trackImage}
+              src=''
             />
           </CoverImage>
           <Box sx={{ ml: 1.5, minWidth: 0 }}>
             <Typography name='TrackName' variant="caption" color="text.secondary" fontWeight={500}>
-              {trackName}
+              {}
             </Typography>
-            <Typography noWrap>
-              <b>{author}</b>
+            <Typography noWrap name='authorName'>
+              <b>{}</b> 
             </Typography>
             <Typography noWrap letterSpacing={-0.25}>              
             </Typography>            
@@ -202,19 +182,15 @@ const MusicPlayer = () => {
             <FastRewindRounded fontSize="large" htmlColor={mainIconColor} />
           </IconButton>
           <IconButton
-            aria-label={paused ? 'play' : 'pause'}
+            aria-label={!isPlaying ? 'play' : 'pause'}
             onClick={() => {
-              setPaused(!paused)
               pauseHandler()
             }}
           >
-            {paused ? (
-              <PlayArrowRounded
-                sx={{ fontSize: '3rem' }}
-                htmlColor={mainIconColor}
-              />
+            {isPlaying ? (
+              <PauseRounded sx={{ fontSize: '3rem' }} htmlColor={mainIconColor} />              
             ) : (
-              <PauseRounded sx={{ fontSize: '3rem' }} htmlColor={mainIconColor} />
+              <PlayArrowRounded sx={{ fontSize: '3rem' }} htmlColor={mainIconColor}/>
             )}
           </IconButton>
           <IconButton aria-label="next song">
