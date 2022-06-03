@@ -29,7 +29,6 @@ export default function MenuDrawer(){
                 username: decoded.data.username,
                 email: decoded.data.email,
                 image: decoded.data.image,
-                playlists: decoded.data.playlists,
                 loggedIn: true
                 }
             ))

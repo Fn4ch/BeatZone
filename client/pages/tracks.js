@@ -58,16 +58,21 @@ const [prevSongIndex,setPrevSongIndex] = useState(currentSongIndex + -1)
 useEffect(()=>{
     setNextSongIndex(()=>{
     if (currentSongIndex + 1 > tracks.length - 1 ){
-      return 0          
+      dispatch(trackIndex({
+        prevSongIndex: prevSongIndex,
+        currentSongIndex: currentSongIndex,
+        nextSongIndex: nextSongIndex
+        })) 
+      return 0
     } else{
-      return currentSongIndex + 1      
-    }    
     dispatch(trackIndex({
         prevSongIndex: prevSongIndex,
         currentSongIndex: currentSongIndex,
         nextSongIndex: nextSongIndex
-        }))
-  })
+        })) 
+      return currentSongIndex + 1         
+    }        
+    })
   },[currentSongIndex])
 
 
@@ -75,37 +80,40 @@ useEffect(()=>{
     return(
         <Layout>
             <Typography marginTop={12} align="center" variant="h3">Треки</Typography>
-            <Container width="lg" sx={{mt:8}}>
-                <Box width='100%'>
-                    <List sx={{width: '100%'}}>
-                        {tracks.map((track) => 
-                        (<ListItem key={track.id}>
-                            <Paper sx={{width:'100%'}} color='secondary'>
-                                <Stack direction='row' alignItems='center' justifyItems='flex-start' sx={{width: '100%'}} margin={1} marginBottom={0}>
-                                        <Box onClick={()=>{
-                                            setTrack(track)
-                                            setCurrentSongIndex()
-                                        }} key={track.id}>
-                                            <Image src={track.image} alt="Img" width="60" height="60"></Image>
-                                        </Box>
-                                        <Box flexDirection="row" alignSelf='center' marginLeft={3} flexGrow={1}>
-                                                <Typography  fontSize={20} sx={{mb: '3px'}}>{track.name}</Typography>
-                                                <Typography button onClick={()=>{}} fontSize={12} sx={{mt: '6px'}} color='primary.light'>{track.author}</Typography>
-                                        </Box>
-                                        <Stack spacing={1} direction='row' alignItems='center' marginRight={4}>
-                                            <Button size='small'  color='inherit'>
-                                                <Add fontSize='large'/>
-                                            </Button>
-                                            <Button size='small' color='inherit' onClick={likeHandler}>
-                                                {liked ? <FavoriteBorder /> : <Favorite />}
-                                            </Button>
+                <Container width="lg" sx={{mt:8}}>
+                    <Box width='100%'>
+                        <List sx={{width: '100%'}}>
+                            {tracks.map((track, index) =>{
+                                return(
+                                <ListItem key={track.id}>
+                                <Paper sx={{width:'100%'}} color='secondary'>
+                                    <Stack direction='row' alignItems='center' justifyItems='flex-start' sx={{width: '100%'}} margin={1} marginBottom={0}>
+                                            <Box onClick={()=>{
+                                                setTrack(track)
+                                                setCurrentSongIndex(index)
+                                            }} key={track.id}>
+                                                <Image src={track.image} alt="Img" width="60" height="60"></Image>
+                                            </Box>
+                                            <Box flexDirection="row" alignSelf='center' marginLeft={3} flexGrow={1}>
+                                                    <Typography  fontSize={20} sx={{mb: '3px'}}>{track.name+ '' + index}</Typography>
+                                                    <Typography button onClick={()=>{}} fontSize={12} sx={{mt: '6px'}} color='primary.light'>{track.author}</Typography>
+                                            </Box>
+                                            <Stack spacing={1} direction='row' alignItems='center' marginRight={4}>
+                                                <Button size='small'  color='inherit'>
+                                                    <Add fontSize='large'/>
+                                                </Button>
+                                                <Button size='small' color='inherit' onClick={likeHandler}>
+                                                    {liked ? <FavoriteBorder /> : <Favorite />}
+                                                </Button>
+                                            </Stack>
                                         </Stack>
-                                </Stack>
-                            </Paper>
-                        </ListItem>))}
-                    </List>
-                </Box>
-        </Container>
+                                    </Paper>
+                                </ListItem>
+                                )
+                            })}                       
+                        </List>
+                    </Box>
+                </Container>
         </Layout>
     )
 }

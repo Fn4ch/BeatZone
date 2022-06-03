@@ -11,10 +11,10 @@ import FastRewindRounded from '@mui/icons-material/FastRewindRounded'
 import VolumeUpRounded from '@mui/icons-material/VolumeUpRounded'
 import VolumeDownRounded from '@mui/icons-material/VolumeDownRounded'
 
-import { selectTrackIndex, selectTrackList } from '../src/features/playerSlice'
+import { selectPlaying, selectTrackIndex, selectTrackList } from '../src/features/playerSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState, useRef } from 'react'
-import { play, pause } from '../src/features/playerSlice'
+import { setPlaying, trackList, trackIndex } from '../src/features/playerSlice'
 
 const Widget = styled('div')(({ theme }) => ({
   padding: 16,
@@ -53,26 +53,60 @@ const MusicPlayer = () => {
   const [duration, setDuration] = useState(0)
   const [position, setPosition] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [tracks, setTracks] = useState([])
-  
+  const [tracks, setTracks] = useState([null])
+  const [trackIndex, setTrackIndex] = useState()
+  const [trackAuthor, setTrackAuthor] = useState()
+  const [trackName, setTrackName] = useState()
+  const [trackAudio, setTrackAudio] = useState()
+  const [trackImage, setTrackImage] = useState()
+
+  const audioRef = useRef(null)
   
   const dispatch = useDispatch()
   const trackList = useSelector(selectTrackList)
   const index = useSelector(selectTrackIndex)
+  const playing = useSelector(selectPlaying)
 
   useEffect(()=>{
-    setTracks(tracks)
+    if(trackList != null){
+    setTracks(trackList.tracks)
     console.log(tracks)
+  }
   },[trackList])
 
+  useEffect(()=>{
+    setIsPlaying(playing.isPlaying)
+    console.log(playing)
+  }, [playing])
+
+  useEffect(()=>{
+    if(index != null){
+      setTrackIndex(index)
+    }
+    if(trackIndex != null){
+      setTrackName(tracks[index.currentSongIndex].name)
+      setTrackAuthor(tracks[index.currentSongIndex].author)
+      setTrackImage(tracks[index.currentSongIndex].image)
+      setTrackAudio(tracks[index.currentSongIndex].audio)
+      setDuration(Math.round(audioRef.current.duration))
+      dispatch(setPlaying({
+        isPlaying: false
+      }))
+    }
+  },[index])
+
   const pauseHandler = () =>{      
-    isPlaying ? HTMLAudioElement.play() : HTMLAudioElement.pause()
-    isPlaying ? dispatch(pause({
+    isPlaying ? audioRef.current.pause() : audioRef.current.play()
+    isPlaying ? dispatch(setPlaying({
       isPlaying: false
     })) :
-    dispatch(pause({
+    dispatch(setPlaying({
       isPlaying: true
-    }))
+    })) 
+  }
+
+  const volumeChangeHandler = (e) =>{
+    audioRef.current.volume = (e.target.value / 100)
   }
   
 
@@ -80,10 +114,10 @@ const MusicPlayer = () => {
   const lightIconColor =
     theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)'
 
-  const formatDuration =(value) => {
+  const formatDuration = (value) => {
     const minute = Math.floor(value / 60);
     const secondLeft = value - minute * 60;
-    return `${minute}:${secondLeft < 9 ? `0${secondLeft}` : secondLeft}`;
+    return `${minute}:${secondLeft < 9 ? `0${secondLeft}` : secondLeft}`
   }
 
   return (
@@ -93,15 +127,15 @@ const MusicPlayer = () => {
           <CoverImage>
             <img
               alt=""
-              src=''
+              src={trackImage}
             />
           </CoverImage>
           <Box sx={{ ml: 1.5, minWidth: 0 }}>
             <Typography name='TrackName' variant="caption" color="text.secondary" fontWeight={500}>
-              {}
+            {trackName}
             </Typography>
             <Typography noWrap name='authorName'>
-              <b>{}</b> 
+              <b>{trackAuthor}</b> 
             </Typography>
             <Typography noWrap letterSpacing={-0.25}>              
             </Typography>            
@@ -110,7 +144,8 @@ const MusicPlayer = () => {
                 <VolumeDownRounded htmlColor={lightIconColor} />
                 <Slider
                     aria-label="Volume"
-                    defaultValue={30}
+                    onChange={volumeChangeHandler}
+                    defaultValue={30}                    
                     sx={{
                     width: 200,
                     color: theme.palette.mode === 'dark' ? '#fff' : 'rgba(0,0,0,0.87)',
@@ -196,7 +231,10 @@ const MusicPlayer = () => {
           <IconButton aria-label="next song">
             <FastForwardRounded fontSize="large" htmlColor={mainIconColor} />
           </IconButton>            
-        </Box>        
+        </Box> 
+        <Box visibility='hidden'>
+        <audio ref={audioRef} src={trackAudio}></audio>  
+        </Box>       
       </Widget>
     </Box>
   )
