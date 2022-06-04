@@ -8,7 +8,7 @@ const Track = new Schema({
     likes : { type: Number},
     audio : { type: String},   
     image: { type: String},
-    comments : {type: String}
+    comments : {type: [String], ref: 'Comments'}
 })
 const track = model('Track', Track) 
 module.exports = track

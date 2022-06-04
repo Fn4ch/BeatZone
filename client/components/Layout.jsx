@@ -9,7 +9,7 @@ export default function Layout({children}){
             <NavBar/>      
                 <main>
                     {children}
-                    <Box height={400}></Box>
+                    <Box height={300}></Box>
                 </main>                
                 <Footer/>
             <MusicPlayer/>            

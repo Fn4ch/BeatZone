@@ -17,12 +17,15 @@ export default function NavBar(){
   return(
       <AppBar position="fixed" color='transparent'>
           <Toolbar sx={{display: 'flex', alignItems:'center',mx:1}}>
-            <Link href="/">
+            <Link href="/" className='link' >
                 <Typography variant="h4" color="secondary">BeatZone</Typography>
             </Link>
                 <Box display='flex' flexDirection='row' sx={{mx:2, display: {sm:'none', xs:'none', md:'contents', lg:'contents'}}} >                  
-                  <Link href="/tracks" sx={{ml:4}}>
-                    <Typography variant="h5" color="secondary" >Tracks</Typography>
+                  <Link href="/tracks" className='link' sx={{ml:4}}>
+                    <Typography variant="h5" color="#ffffff" >Tracks</Typography>
+                  </Link>
+                  <Link href='/playlists' className='link' sx={{ml:4}}>
+                    <Typography variant='h5' color='#ffffff'>Плейлисты</Typography>
                   </Link>
                 </Box>
                 <Box flexGrow={1} ></Box>                

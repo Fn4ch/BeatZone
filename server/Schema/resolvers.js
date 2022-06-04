@@ -28,11 +28,20 @@ const resolvers = {
             return await User.findOne({username})
         },
 
-        getUserTracks : async (_, {author}, context) =>{
+        getUserTracks : async (_, {author}, context) => {
             return await Track.find({author: author})
         },
+
         getPlaylists : async (_, _args)=>{
             return await Playlist.find()
+        },
+
+        getUserPlaylists : async (_, {author}, context) => {
+            return await Playlist.find({author: author})
+        },
+
+        getTrack : async (_, {id}, context) =>{
+            return await Track.findOne({_id : id})
         }
     },
     Mutation: {
@@ -84,9 +93,12 @@ const resolvers = {
             await save()
             return track
         },
-        addPlaylist : async (parent, args, context) => {
-            const playlist = new Playlist({args})
+        addPlaylist : async (parent, {author, title}, context) => {
+            const user = await User.findOne({author})
+            const playlist = new Playlist({title, author})
+            user.playlist += playlist
             await playlist.save()
+            await user.save()
             return playlist
         },
         addTrackToPlaylist: async (parent, {title, author, Track}, context) => {
@@ -95,6 +107,13 @@ const resolvers = {
             currentPlaylist.title = title
             await currentPlaylist.save()
             return currentPlaylist
+        },
+        addComment: async (_, {comment, author, trackId}, context) =>{
+            const track = await Track.findOne({trackId})
+            const newComment = new Comment({comment, author})
+            track.comments += comment
+            await comment.save()
+            await track.save()
         }
     }
 }

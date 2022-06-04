@@ -14,7 +14,7 @@ import VolumeDownRounded from '@mui/icons-material/VolumeDownRounded'
 import { selectPlaying, selectTrackIndex, selectTrackList } from '../src/features/playerSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState, useRef } from 'react'
-import { setPlaying, trackList, trackIndex } from '../src/features/playerSlice'
+import { setPlaying, trackIndex } from '../src/features/playerSlice'
 
 const Widget = styled('div')(({ theme }) => ({
   padding: 16,
@@ -52,13 +52,20 @@ const MusicPlayer = () => {
   const theme = useTheme();
   const [duration, setDuration] = useState(0)
   const [position, setPosition] = useState(0)
+
   const [isPlaying, setIsPlaying] = useState(false)
-  const [tracks, setTracks] = useState([null])
-  const [trackIndex, setTrackIndex] = useState()
+  const [tracks, setTracks] = useState([null])  
+  const [prevTrackIcon, setPrevTrackIcon] = useState(true)
+  const [isVisible, setIsVisible] = useState(false)
+
   const [trackAuthor, setTrackAuthor] = useState()
   const [trackName, setTrackName] = useState()
   const [trackAudio, setTrackAudio] = useState()
   const [trackImage, setTrackImage] = useState()
+
+  const [currentTrackIndex, setCurrentTrackIndex] = useState()
+  const [prevTrackIndex, setPrevTrackIndex] = useState()
+  const [nextTrackIndex, setNextTrackIndex] = useState()
 
   const audioRef = useRef(null)
   
@@ -70,8 +77,11 @@ const MusicPlayer = () => {
   useEffect(()=>{
     if(trackList != null){
     setTracks(trackList.tracks)
-    console.log(tracks)
-  }
+    setIsVisible(true)
+    }    
+    else{
+      setIsVisible(false)
+    }
   },[trackList])
 
   useEffect(()=>{
@@ -81,14 +91,27 @@ const MusicPlayer = () => {
 
   useEffect(()=>{
     if(index != null){
-      setTrackIndex(index)
+      setCurrentTrackIndex(index)
     }
-    if(trackIndex != null){
+    if(currentTrackIndex != null){
       setTrackName(tracks[index.currentSongIndex].name)
       setTrackAuthor(tracks[index.currentSongIndex].author)
       setTrackImage(tracks[index.currentSongIndex].image)
       setTrackAudio(tracks[index.currentSongIndex].audio)
       setDuration(Math.round(audioRef.current.duration))
+      if(index.currentSongIndex + 1 == tracks.length){
+        setNextTrackIndex(0)
+      }
+      else{
+        setNextTrackIndex(index.currentSongIndex +1)
+      }
+      if(index.currentSongIndex == 0){
+        setPrevTrackIcon(false)
+      }      
+      else{
+        setPrevTrackIcon(true)
+        setPrevTrackIndex(index.currentSongIndex -1)
+      }
       dispatch(setPlaying({
         isPlaying: false
       }))
@@ -108,6 +131,18 @@ const MusicPlayer = () => {
   const volumeChangeHandler = (e) =>{
     audioRef.current.volume = (e.target.value / 100)
   }
+
+  const nextTrackHandler = (e) =>{
+    dispatch(trackIndex({
+      currentSongIndex: nextTrackIndex
+    }))
+  }
+
+  const prevTrackHandler = (e) =>{
+    dispatch(trackIndex({
+      currentSongIndex: prevTrackIndex
+    }))
+  }
   
 
   const mainIconColor = theme.palette.mode === 'dark' ? '#fff' : '#000';
@@ -121,7 +156,8 @@ const MusicPlayer = () => {
   }
 
   return (
-    <Box sx={{position: 'fixed', bottom: 0, width: '100%', height: 240, mb: -2 }}>
+     isVisible ?
+      (<Box sx={{position: 'fixed', bottom: 0, width: '100%', height: 240, mb: -2}}>
       <Widget>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <CoverImage>
@@ -130,8 +166,8 @@ const MusicPlayer = () => {
               src={trackImage}
             />
           </CoverImage>
-          <Box sx={{ ml: 1.5, minWidth: 0 }}>
-            <Typography name='TrackName' variant="caption" color="text.secondary" fontWeight={500}>
+          <Box sx={{ ml: 1.5, minWidth: 0 }} flexGrow={1}>
+            <Typography name='TrackName' fontSize={24} variant="caption" color="text.secondary" fontWeight={500}>
             {trackName}
             </Typography>
             <Typography noWrap name='authorName'>
@@ -139,8 +175,8 @@ const MusicPlayer = () => {
             </Typography>
             <Typography noWrap letterSpacing={-0.25}>              
             </Typography>            
-          </Box>
-          <Stack spacing={2} direction="row" sx={{ mb: 1, px: 1, visibility: {xs: 'hidden',sm: 'hidden', md:'hidden', lg:'visible', xl:'visible'}}} alignItems="center">
+          </Box>          
+          <Stack spacing={2} direction="row" sx={{ mb: 1, px: 1, visibility: {xs: 'hidden',sm: 'hidden', md:'hidden', lg:'visible', xl:'visible'}}} alignItems="center" >
                 <VolumeDownRounded htmlColor={lightIconColor} />
                 <Slider
                     aria-label="Volume"
@@ -213,8 +249,8 @@ const MusicPlayer = () => {
         <Box
           sx={{display: 'flex',alignItems: 'center',justifyContent: 'center',mt: -1}}
         >
-          <IconButton aria-label="previous song">
-            <FastRewindRounded fontSize="large" htmlColor={mainIconColor} />
+          <IconButton onClick={prevTrackHandler} aria-label="previous song">
+            {prevTrackIcon ? <FastRewindRounded fontSize="large" htmlColor={mainIconColor} /> : <Box/>} 
           </IconButton>
           <IconButton
             aria-label={!isPlaying ? 'play' : 'pause'}
@@ -228,7 +264,7 @@ const MusicPlayer = () => {
               <PlayArrowRounded sx={{ fontSize: '3rem' }} htmlColor={mainIconColor}/>
             )}
           </IconButton>
-          <IconButton aria-label="next song">
+          <IconButton onClick={nextTrackHandler} aria-label="next song">
             <FastForwardRounded fontSize="large" htmlColor={mainIconColor} />
           </IconButton>            
         </Box> 
@@ -236,8 +272,8 @@ const MusicPlayer = () => {
         <audio ref={audioRef} src={trackAudio}></audio>  
         </Box>       
       </Widget>
-    </Box>
-  )
+    </Box>) : <Box/> 
+  ) 
 }
 
 export default MusicPlayer

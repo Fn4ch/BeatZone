@@ -45,7 +45,7 @@ async function startServer(){
                     console.log(token.data)
                 }                
             }
-            catch (e) {} 
+            catch (e) {}
             return ctx
          } 
         

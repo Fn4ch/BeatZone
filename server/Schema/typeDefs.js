@@ -15,7 +15,7 @@ const typeDefs = gql`
 
     type Comment{
         id: ID
-        message: String
+        comment: String
         author: User
     }
 
@@ -33,7 +33,7 @@ const typeDefs = gql`
         likes: Int
         image: String
         audio: String
-        comment: [Comment]
+        comments: [Comment]
     }
     
     type Playlist {
@@ -53,8 +53,12 @@ const typeDefs = gql`
         getUser(username: String) : User
 
         getUserTracks(author: String) : [Track]
+        
+        getUserPlaylists(author: String) : [Playlist]
 
         getPlaylists: [Playlist]
+        
+        getTrack: Track
     }
 
     #Mutations
@@ -70,6 +74,8 @@ const typeDefs = gql`
         addPlaylist(title: String, author: String): Playlist
 
         addTrackToPlaylist(title: String, Track: String, author: String): Playlist
+
+        addComment(author: String, comment: String): Comment
     }
 
 `

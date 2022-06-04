@@ -29,6 +29,7 @@ export default function MenuDrawer(){
                 username: decoded.data.username,
                 email: decoded.data.email,
                 image: decoded.data.image,
+                playlist: decoded.data.playlists,
                 loggedIn: true
                 }
             ))
@@ -64,8 +65,8 @@ export default function MenuDrawer(){
                     <ListItem button onClick={() =>{ router.push(`/tracks/${username}`)}}>
                         <ListItemText primary={'Мои треки'}/>
                     </ListItem>
-                    <ListItem button onClick={() =>{router.push(`/playlists`)}}>
-                        <ListItemText primary={'Плейлисты'}/>
+                    <ListItem button onClick={() =>{router.push(`/playlists/${username}`)}}>
+                        <ListItemText primary={'Мои плейлисты'}/>
                     </ListItem>
                     <ListItem  button onClick={() =>{}}>
                         <ListItemText primary={'Настройки'}/>

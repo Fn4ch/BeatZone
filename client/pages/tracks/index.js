@@ -1,13 +1,13 @@
-import Layout  from '../components/Layout'
+import Layout  from '../../components/Layout'
 import { gql } from "@apollo/client"
-import client from '../components/client'
+import client from '../../components/client'
 import { Container, List, ListItem, Typography, Box, Stack, Paper, Button} from '@mui/material'
 import { Favorite, FavoriteBorder, Add} from '@mui/icons-material'
 import Image from "next/image"
 import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { trackList, trackIndex } from '../src/features/playerSlice'
-import Player from '../components/player'
+import { trackList, trackIndex } from '../../src/features/playerSlice'
+import Player from '../../components/player'
 
 
 export async function getServerSideProps()
@@ -52,27 +52,11 @@ useEffect(()=>{
 
 
 const [currentSongIndex,setCurrentSongIndex] = useState(0)
-const [nextSongIndex,setNextSongIndex] = useState(currentSongIndex + 1)
-const [prevSongIndex,setPrevSongIndex] = useState(currentSongIndex + -1)
 
 useEffect(()=>{
-    setNextSongIndex(()=>{
-    if (currentSongIndex + 1 > tracks.length - 1 ){
-      dispatch(trackIndex({
-        prevSongIndex: prevSongIndex,
-        currentSongIndex: currentSongIndex,
-        nextSongIndex: nextSongIndex
-        })) 
-      return 0
-    } else{
     dispatch(trackIndex({
-        prevSongIndex: prevSongIndex,
-        currentSongIndex: currentSongIndex,
-        nextSongIndex: nextSongIndex
-        })) 
-      return currentSongIndex + 1         
-    }        
-    })
+        currentSongIndex: currentSongIndex
+    }))
   },[currentSongIndex])
 
 
@@ -95,7 +79,7 @@ useEffect(()=>{
                                                 <Image src={track.image} alt="Img" width="60" height="60"></Image>
                                             </Box>
                                             <Box flexDirection="row" alignSelf='center' marginLeft={3} flexGrow={1}>
-                                                    <Typography  fontSize={20} sx={{mb: '3px'}}>{track.name+ '' + index}</Typography>
+                                                    <Typography  fontSize={20} sx={{mb: '3px'}}>{track.name}</Typography>
                                                     <Typography button onClick={()=>{}} fontSize={12} sx={{mt: '6px'}} color='primary.light'>{track.author}</Typography>
                                             </Box>
                                             <Stack spacing={1} direction='row' alignItems='center' marginRight={4}>

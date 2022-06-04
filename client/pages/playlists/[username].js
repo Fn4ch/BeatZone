@@ -1,5 +1,9 @@
-
-
+import client from '../../components/client'
+import {gql} from '@apollo/client'
+import { Container, List, ListItem, Typography, Box, Stack, Paper, IconButton, Button, Avatar, Grid} from '@mui/material'
+import { Add } from '@mui/icons-material'
+import { useRouter } from 'next/router'
+import Layout from '../../components/Layout'
 
 export async function getStaticPaths() {
 
@@ -25,19 +29,18 @@ export async function getStaticProps({params})
 
     const { data } =  await client.query({
         query: gql`
-        query getUerTracks($author: String){
-            getUserTracks(author: $author){
-                image 
-                name
-                audio 
-                author                      
+        query getUserPlaylists($author: String){
+            getUserPlaylists(author: $author){
+                title 
+                id
+                author      
             } 
         }        
         `, variables: {author: params.username}},)
 
     return{
         props: {
-            tracks : data.getUserTracks
+            playlists : data.getUserPlaylists
         }
     }
 }
@@ -47,37 +50,27 @@ const userTracksPage = ({playlists}) => {
 
 const router = useRouter()
 const {username} = router.query
-console.log(username)
 
 return(
     <Layout>
         <Typography marginTop={12} align="center" variant="h3">Плейлисты пользователя {username}</Typography>
             <Container width="lg" sx={{mt:8}}>
                 <Box width='100%'>
-                    <List sx={{width: '100%'}}>
-                        {tracks.map((track) => 
-                        (<ListItem key={track.id}>
-                            <Paper sx={{width:'100%'}} color='secondary'>
-                                <Stack direction='row' alignItems='center' justifyItems='flex-start' sx={{width: '100%'}} margin={1} marginBottom={0}>
-                                        <Box onClick={()=>{}}>
-                                            <Image src={track.image} alt="Img" width="60" height="60"></Image>
-                                        </Box>
-                                        <Box flexDirection="row" alignSelf='center' marginLeft={3} flexGrow={1}>
-                                                <Typography  fontSize={20} sx={{mb: '3px'}}>{track.name}</Typography>
-                                                <Typography button onClick={()=>{}} fontSize={12} sx={{mt: '6px'}} color='primary.light'>{track.author}</Typography>
-                                        </Box>
-                                        <Stack spacing={1} direction='row' alignItems='center' marginRight={4}>
-                                            <Button size='small'  color='inherit'>
-                                                <Add fontSize='large'/>
-                                            </Button>
-                                            <Button size='small' color='inherit' onClick={likeHandler}>
-                                                {liked ? <FavoriteBorder /> : <Favorite />}
-                                            </Button>
-                                        </Stack>
-                                </Stack>
-                            </Paper>
-                        </ListItem>))}
-                    </List>
+                    <Grid sx={{width: '100%'}} container spacing={2}>
+                    {playlists.map((playlist) => 
+                        (<Grid item>
+                            <Stack>
+                                <Avatar height={200} width={200} variant='square'>{playlist.title}</Avatar>
+                            </Stack>
+                        </Grid>))
+                    }            
+                        <Grid item alignItems='center' justifyItems='center' >
+                            <IconButton onClick={()=>{}} variant='outlined' color='secondary' sx={{mx: 'auto', my: 'auto'}}>
+                                    <Add fontSize='small' color='secondary' sx={{width: 200, height: 200}}/>                                       
+                            </IconButton>
+                            <Typography variant='h5' alignSelf='flex-end'>Добавить плейлист</Typography>                        
+                        </Grid>      
+                    </Grid>
                 </Box>
         </Container>
     </Layout>
