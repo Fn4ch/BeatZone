@@ -35,6 +35,7 @@ export async function getStaticProps({params})
         query: gql`
         query getUerTracks($author: String){
             getUserTracks(author: $author){
+                id
                 image 
                 name
                 audio 

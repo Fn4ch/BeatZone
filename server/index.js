@@ -41,8 +41,8 @@ async function startServer(){
                         req.headers["authorization"],
                         JWT_SECRET
                     )
-                    ctx.username = token.data
-                    console.log(token.data)
+                    ctx = token.data
+                    console.log(token, 'context')
                 }                
             }
             catch (e) {}

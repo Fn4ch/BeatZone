@@ -6,7 +6,9 @@ import cookie from 'js-cookie'
 import { useDispatch } from 'react-redux'
 import { logout } from '../src/features/userSlice'
 import jwt_decode from 'jwt-decode'
-import { login } from '../src/features/userSlice'
+import { login, playlists} from '../src/features/userSlice'
+import { gql, useQuery } from '@apollo/client'
+
 
 export default function MenuDrawer(){
 
@@ -23,18 +25,21 @@ export default function MenuDrawer(){
         const token = cookie.get('auth-token')
         if(token){
             const decoded = jwt_decode(token)
-            setUsername(decoded.data.username)    
+            setUsername(decoded.data.username)
+            cookie.set('playlists', decoded.data.playlists, {expires: 2/24})
             dispatch(
                 login({
                 username: decoded.data.username,
                 email: decoded.data.email,
                 image: decoded.data.image,
-                playlist: decoded.data.playlists,
+                password: decoded.data.password,
+                playlists: decoded.data.playlists,
                 loggedIn: true
                 }
-            ))
+            ))            
         }
     }, [])
+
     
     return(
         <>

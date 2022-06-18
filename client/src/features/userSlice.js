@@ -11,11 +11,14 @@ export const userSlice = createSlice({
         },
         logout: (state) => {
             state.user = null 
+        },
+        playlists: (state, action) =>{
+            state.user.playlists = action.payload.playlists
         }        
     }
 })
 
-export const {login, logout} = userSlice.actions
+export const {login, logout, playlists} = userSlice.actions
 
 export const selectUser = (state) => state.user.user
 

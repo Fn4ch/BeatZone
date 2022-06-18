@@ -7,7 +7,7 @@ const typeDefs = gql`
         email: String!
         username: String!
         password: String!
-        playlist: [Playlist]
+        playlists: [Playlist]
         image: String
         role: [Role]
         token: String
@@ -39,14 +39,16 @@ const typeDefs = gql`
     type Playlist {
         id: ID
         title: String!
-        Track: [Track!]!
-        author: String!
+        track: [Track]
+        author: String
     }
 
     #Queries
     type Query{ 
 
         getAllUsers: [User]
+
+        getTracks: [Track]
         
         getAllTracks: [Track]
 
@@ -57,6 +59,8 @@ const typeDefs = gql`
         getUserPlaylists(author: String) : [Playlist]
 
         getPlaylists: [Playlist]
+        
+        getPlaylist(id: String): Playlist
         
         getTrack: Track
     }
@@ -73,7 +77,7 @@ const typeDefs = gql`
 
         addPlaylist(title: String, author: String): Playlist
 
-        addTrackToPlaylist(title: String, Track: String, author: String): Playlist
+        addTrackToPlaylist(trackId: String, playlistId: String): Playlist
 
         addComment(author: String, comment: String): Comment
     }

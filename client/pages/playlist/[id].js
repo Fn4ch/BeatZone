@@ -1,75 +1,95 @@
-import Layout  from '../../components/Layout'
-import { gql } from "@apollo/client"
 import client from '../../components/client'
-import { Container, List, ListItem, Typography, Box, Stack, Paper, Button} from '@mui/material'
-import { Favorite, FavoriteBorder, Add} from '@mui/icons-material'
+import { gql } from '@apollo/client'
+import { Container, Typography, Box, Paper, Button, List, ListItem, Stack, IconButton} from '@mui/material'
+import { DeleteOutline } from '@mui/icons-material'
+import Layout from '../../components/Layout'
 import Image from "next/image"
 import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { trackList, trackIndex } from '../../src/features/playerSlice'
-import Player from '../../components/player'
-import AddTrackToPlaylist from '../../components/AddTrackToPlaylist'
 import { useRouter } from 'next/router'
+import { trackList, trackIndex } from '../../src/features/playerSlice'
+ 
 
+export async function getServerSidePaths() {
 
-export async function getServerSideProps()
-{
     const { data } =  await client.query({
         query: gql`
-        query getAllTracks{
-            getAllTracks{
+        query getPlaylists{
+            getPlaylists{
                 id
-                author
-                name
-                image
-                audio
             }
         }
-        `
+        `    
     })
+    const playlists = data.getPlaylists.getPlaylists
+    console.log(playlists)
+    const paths = playlists.map((playlist) => ({params: {id: playlist.id},}))
+    return{        
+        paths,
+        fallback: false
+    }
+}
+
+export async function getServerSideProps({params})
+{
+
+    const { data } =  await client.query({
+        query: gql`
+        query getPlaylist($id: String){
+            getPlaylist(id: $id){
+                title
+                track{
+                    id
+                    name
+                    audio
+                    image
+                    author
+                    description
+                }
+            }
+        }`, variables: {id: params.id}
+    })
+
     return{
         props: {
-            tracks: data.getAllTracks
+            playlist : data.getPlaylist
         }
     }
 }
 
-export default function tracksPage({tracks}){
+export default function PlaylistPage({playlist}){
 
-const router = useRouter()
+    const tracks = playlist.track
 
-const dispatch = useDispatch()
+    const router = useRouter()
 
-const [track, setTrack] = useState(null)
+    const dispatch = useDispatch()
 
-const likeHandler = (e) =>{
-    setLiked(!liked)
-}
-
-useEffect(()=>{
-    dispatch(trackList({
-        tracks
-    }
-    ))
-},[])
+    const [track, setTrack] = useState(null)
 
 
-const [currentSongIndex,setCurrentSongIndex] = useState(0)
+    useEffect(()=>{
+        dispatch(trackList({
+            tracks
+        }
+        ))
+    },[])
 
-useEffect(()=>{
-    dispatch(trackIndex({
-        currentSongIndex: currentSongIndex
-    }))
-  },[currentSongIndex])
 
+    const [currentSongIndex,setCurrentSongIndex] = useState(0)
 
+    useEffect(()=>{
+        dispatch(trackIndex({
+            currentSongIndex: currentSongIndex
+        }))
+    },[currentSongIndex])
 
     return(
         <Layout>
-            <Typography marginTop={12} align="center" variant="h3">Треки</Typography>
-                <Container width="lg" sx={{mt:8}}>
-                    <Box width='100%'>
-                        <List sx={{width: '100%'}}>
+        <Typography marginTop={12} align="center" variant="h3">{playlist.title}</Typography>
+            <Container width="lg" sx={{mt:8}}>
+                <Box width='100%'>
+                    <List sx={{width: '100%'}}>
                             {tracks.map((track, index) =>{
                                 return(
                                 <ListItem key={track.id}>
@@ -88,16 +108,18 @@ useEffect(()=>{
                                                     }} fontSize={12} sx={{mt: '6px'}} color='primary.light'>{track.author}</Typography>
                                             </Box>
                                             <Stack spacing={1} direction='row' alignItems='center' marginRight={4}>
-                                                <AddTrackToPlaylist {...track}/>
+                                                <IconButton>
+                                                    <DeleteOutline />
+                                                </IconButton>
                                             </Stack>
                                         </Stack>
                                     </Paper>
                                 </ListItem>
                                 )
                             })}                       
-                        </List>
-                    </Box>
-                </Container>
-        </Layout>
+                    </List>
+                </Box>
+        </Container>
+    </Layout>
     )
 }

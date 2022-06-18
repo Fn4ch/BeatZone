@@ -18,6 +18,12 @@ const resolvers = {
             return await User.find()         
         },
 
+        getTracks: async(_,{trackId}) =>{
+            const tracksToFind = trackId.map(id =>({_id: id}))
+            console.log(tracksToFind)
+            return await Track.find(tracksToFind)
+        },
+
         getAllTracks : async (_, _args, context) => {
             console.log(context)
             return await Track.find()
@@ -41,27 +47,28 @@ const resolvers = {
         },
 
         getTrack : async (_, {id}, context) =>{
-            return await Track.findOne({_id : id})
+            return await Track.findOne({_id: id})
+        },
+        getPlaylist : async (_, {id}, context) =>{
+            return await Playlist.findOne({_id: id})
         }
     },
     Mutation: {
         createUser: async (_,{username, password, email}) =>
         {
+            email = email.toLowerCase()
             const oldUser = await User.findOne({email})
             const oldUser2 = await User.findOne({username})
             if(oldUser2)
             throw new ApolloError('Пользователь с таким именем уже зарегистрирован:' + username, 'USER_ALREADY_EXSISTS')
             if(oldUser)
-            throw new ApolloError('Пользователь с таким email уже зарегистрирован:' + email,'USER_ALREADY_EXISTS')
-            else{
-                email = email.toLowerCase()
-                const newUser = new User({
-                    email,
-                    username,
-                    password
-                })
-                await newUser.save()            
-            }
+            throw new ApolloError('Пользователь с таким email уже зарегистрирован:' + email,'USER_ALREADY_EXISTS')                
+            const newUser = new User({
+                email,
+                username,
+                password
+            })
+            await newUser.save()     
             return newUser
         }, 
         loginUser: async (parent, {password, email}, context) =>{    
@@ -94,26 +101,32 @@ const resolvers = {
             return track
         },
         addPlaylist : async (parent, {author, title}, context) => {
-            const user = await User.findOne({author})
-            const playlist = new Playlist({title, author})
-            user.playlist += playlist
-            await playlist.save()
-            await user.save()
+            const playlist = new Playlist({title, author})   
+            await User.findOneAndUpdate(
+                {username: author},
+                {$push: {playlists: playlist, $ref: "Playlist"}}
+            )         
+            await playlist.save()            
             return playlist
         },
-        addTrackToPlaylist: async (parent, {title, author, Track}, context) => {
-           const currentPlaylist = await Playlist.find({title: title})
-            currentPlaylist.Track = Track
-            currentPlaylist.title = title
-            await currentPlaylist.save()
-            return currentPlaylist
+        addTrackToPlaylist: async (parent, {trackId, playlistId}, context) => {
+            const track = await Track.findById(trackId)
+            await Playlist.findOneAndUpdate(
+                {id: playlistId},
+                {$push: {track: track, $ref: "Track"}}
+            )
+            const playlist = await Playlist.findById(playlistId)
+            console.log(trackId)
+            return playlist
         },
-        addComment: async (_, {comment, author, trackId}, context) =>{
-            const track = await Track.findOne({trackId})
+        addComment: async (_, {id, comment, author}, context) =>{            
             const newComment = new Comment({comment, author})
-            track.comments += comment
-            await comment.save()
-            await track.save()
+            await Track.findOneAndUpdate(
+                {_id: id},
+                {$push: {comments: {newComment}}}
+            )
+            await newComment.save()
+            return newComment
         }
     }
 }

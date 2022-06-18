@@ -15,14 +15,14 @@ export default function NavBar(){
 
 
   return(
-      <AppBar position="fixed" color='transparent'>
-          <Toolbar sx={{display: 'flex', alignItems:'center',mx:1}}>
+      <AppBar position="fixed" color='transparent' sx={{boxShadow: 0}}>
+          <Toolbar sx={{display: 'flex', alignItems:'center',mx:1, boxShadow: 0}}>
             <Link href="/" className='link' >
                 <Typography variant="h4" color="secondary">BeatZone</Typography>
             </Link>
                 <Box display='flex' flexDirection='row' sx={{mx:2, display: {sm:'none', xs:'none', md:'contents', lg:'contents'}}} >                  
                   <Link href="/tracks" className='link' sx={{ml:4}}>
-                    <Typography variant="h5" color="#ffffff" >Tracks</Typography>
+                    <Typography variant="h5" color="#ffffff" >Tреки</Typography>
                   </Link>
                   <Link href='/playlists' className='link' sx={{ml:4}}>
                     <Typography variant='h5' color='#ffffff'>Плейлисты</Typography>

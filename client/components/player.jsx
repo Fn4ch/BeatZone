@@ -63,7 +63,7 @@ const MusicPlayer = () => {
   const [trackAudio, setTrackAudio] = useState()
   const [trackImage, setTrackImage] = useState()
 
-  const [currentTrackIndex, setCurrentTrackIndex] = useState()
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0)
   const [prevTrackIndex, setPrevTrackIndex] = useState()
   const [nextTrackIndex, setNextTrackIndex] = useState()
 
@@ -93,7 +93,8 @@ const MusicPlayer = () => {
     if(index != null){
       setCurrentTrackIndex(index)
     }
-    if(currentTrackIndex != null){
+    if(currentTrackIndex)
+    {
       setTrackName(tracks[index.currentSongIndex].name)
       setTrackAuthor(tracks[index.currentSongIndex].author)
       setTrackImage(tracks[index.currentSongIndex].image)
@@ -211,7 +212,9 @@ const MusicPlayer = () => {
           min={0}
           step={1}
           max={duration}
-          onChange={(_, value) => setPosition(value)}
+          onChange={(e, value) => {
+            setPosition(value)
+          }}
           sx={{
             color: theme.palette.mode === 'dark' ? '#fff' : 'rgba(0,0,0,0.87)',
             height: 4,
@@ -244,14 +247,16 @@ const MusicPlayer = () => {
           }}
         >
           <TinyText>{formatDuration(position)}</TinyText>
-          <TinyText>-{formatDuration(duration - position)}</TinyText>
+          <TinyText>-{formatDuration(duration)}</TinyText>
         </Box>
         <Box
           sx={{display: 'flex',alignItems: 'center',justifyContent: 'center',mt: -1}}
         >
+          { prevTrackIcon ?
           <IconButton onClick={prevTrackHandler} aria-label="previous song">
-            {prevTrackIcon ? <FastRewindRounded fontSize="large" htmlColor={mainIconColor} /> : <Box/>} 
-          </IconButton>
+            <FastRewindRounded fontSize="large" htmlColor={mainIconColor} />
+          </IconButton> : <Box/>
+          }
           <IconButton
             aria-label={!isPlaying ? 'play' : 'pause'}
             onClick={() => {

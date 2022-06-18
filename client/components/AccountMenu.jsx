@@ -52,7 +52,7 @@ const AccountMenu = () => {
                 <MenuItem onClick={handleClose}>Profile</MenuItem>
                 <MenuItem onClick={handleClose}>My tracks</MenuItem>
                 <MenuItem onClick={handleClose}>Playlists</MenuItem>
-                <MenuItem onClick={handleClose}>logout <Logout/></MenuItem>
+                <MenuItem onClick={handleClose}>logout</MenuItem>
               </Menu>
             </div>          
         </>

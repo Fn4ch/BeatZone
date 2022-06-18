@@ -37,7 +37,10 @@ import { useRouter } from 'next/router'
   }
   const CREATE_USER_MUTATION = gql`
     mutation createUser($username: String, $password: String, $email: String){
-      createUser(username: $username, password: $password, email: $email) 
+      createUser(username: $username, password: $password, email: $email){
+        username
+        email
+      } 
       }
     `
 
@@ -47,7 +50,6 @@ import { useRouter } from 'next/router'
     const registerHandler = async (e) => {
       e.preventDefault()
       await createUser({variables: {username, password, email}})
-      router.push('/loginIn')
     }
   
 

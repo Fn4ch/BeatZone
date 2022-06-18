@@ -17,8 +17,6 @@ const UploadTrack = () =>{
         display: 'none',        
     })
 
-    const [drag, setDrag] = useState(false)
-
     const router = useRouter()
     const currentUser = useSelector(selectUser)
 
@@ -62,10 +60,15 @@ const UploadTrack = () =>{
                 console.log(reader.result)                               
             }
             reader.readAsDataURL(file)
+            uploadImage()
         })        
     }, [])  
 
     const {getRootProps, getInputProps, acceptedFiles } = useDropzone({onDrop, maxFiles: 1})
+
+    useEffect(()=>{
+        imageUrl
+    },[imageUrl])
 
 
     // if(loading) return 'Submitting...'
@@ -78,14 +81,11 @@ const UploadTrack = () =>{
         fetch('https://api.cloudinary.com/v1_1/dxegpqszm/image/upload', {
             method: 'POST',
             body: formData
-        }).then(r => r.json())
-        .then(result => setImageUrl(result.url)).then(()=>{
-            if(imageUrl != null){
-                uploadAudio()
-            }
-            else throw new ApolloError
         })
+        .then(r => r.json()).catch()
+        .then(result => setImageUrl(result.url))
     }
+    
 
     function uploadAudio(){
         const formData = new FormData()
@@ -106,8 +106,7 @@ const UploadTrack = () =>{
     
 
     const uploadHandler = (e) =>{
-        e.preventDefault()
-        uploadImage() 
+        uploadAudio() 
     }
 
     const imagePath = acceptedFiles.map(file => <Typography marginLeft={4} key={file.path} >{file.path}</Typography>)
@@ -129,7 +128,7 @@ const UploadTrack = () =>{
                         <div {...getRootProps()}>
                             <Stack direction="row" marginTop={4} alignContent='center' alignItems='center'>
                                 <input {...getInputProps()}/>
-                                <Image src={trackData.image} height={200} width={200}/>                                            
+                                <Image src={imageUrl} height={200} width={200}/>                                            
                             </Stack>
                             <List>
                                 <ListItem>
