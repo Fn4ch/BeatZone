@@ -6,6 +6,8 @@ import { gql } from '@apollo/client'
 import Image from 'next/image'
 import { useState } from 'react'
 import {useRouter} from 'next/router'
+import MusicPlayer from '../../components/player'
+import AddTrackToPlaylist from '../../components/AddTrackToPlaylist'
 
 
 
@@ -55,15 +57,8 @@ export async function getStaticProps({params})
 
 const userTracksPage = ({tracks}) => {
 
-    const [liked, setLiked] = useState(true)
-
-const likeHandler = (e) =>{
-    setLiked(!liked)
-}
-
 const router = useRouter()
 const {username} = router.query
-console.log(username)
 
 return(
     <Layout>
@@ -83,12 +78,7 @@ return(
                                                 <Typography button onClick={()=>{}} fontSize={12} sx={{mt: '6px'}} color='primary.light'>{track.author}</Typography>
                                         </Box>
                                         <Stack spacing={1} direction='row' alignItems='center' marginRight={4}>
-                                            <Button size='small'  color='inherit'>
-                                                <Add fontSize='large'/>
-                                            </Button>
-                                            <Button size='small' color='inherit' onClick={likeHandler}>
-                                                {liked ? <FavoriteBorder /> : <Favorite />}
-                                            </Button>
+                                            <AddTrackToPlaylist {...track}/>
                                         </Stack>
                                 </Stack>
                             </Paper>
@@ -96,6 +86,7 @@ return(
                     </List>
                 </Box>
         </Container>
+        <MusicPlayer/>
     </Layout>
 )
 }

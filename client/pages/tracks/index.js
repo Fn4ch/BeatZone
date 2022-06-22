@@ -7,7 +7,7 @@ import Image from "next/image"
 import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { trackList, trackIndex } from '../../src/features/playerSlice'
-import Player from '../../components/player'
+import MusicPlayer from '../../components/player'
 import AddTrackToPlaylist from '../../components/AddTrackToPlaylist'
 import { useRouter } from 'next/router'
 
@@ -42,9 +42,6 @@ const dispatch = useDispatch()
 
 const [track, setTrack] = useState(null)
 
-const likeHandler = (e) =>{
-    setLiked(!liked)
-}
 
 useEffect(()=>{
     dispatch(trackList({
@@ -88,7 +85,7 @@ useEffect(()=>{
                                                     }} fontSize={12} sx={{mt: '6px'}} color='primary.light'>{track.author}</Typography>
                                             </Box>
                                             <Stack spacing={1} direction='row' alignItems='center' marginRight={4}>
-                                                <AddTrackToPlaylist {...track}/>
+                                                <AddTrackToPlaylist key={index} id={index} {...track}/>
                                             </Stack>
                                         </Stack>
                                     </Paper>
@@ -96,8 +93,9 @@ useEffect(()=>{
                                 )
                             })}                       
                         </List>
-                    </Box>
+                    </Box>                    
                 </Container>
+            <MusicPlayer/>
         </Layout>
     )
 }

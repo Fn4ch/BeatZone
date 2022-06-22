@@ -74,6 +74,8 @@ const LOGIN_USER_MUTATION = gql`
 
 const userTracksPage = ({playlists}) => {
 
+const router = useRouter()
+
 const [loginUser, {error, loading, data}] = useMutation(LOGIN_USER_MUTATION)
 const [addPlaylist] = useMutation(ADD_PLAYLIST)
 
@@ -89,14 +91,13 @@ const currentUser = useSelector(selectUser)
     setOpen(false)
   }
 
-const router = useRouter()
-const {username} = router.query
+  const {username} = router.query
 
 const addPlaylistHandler = () =>{
     addPlaylist({variables: {author: username, title: title}, onCompleted: ()=> {
         loginUser({variables: {password: currentUser.password, email: currentUser.email}, onCompleted: (data) =>{        
             cookie.set('auth-token', data.loginUser.token, {expires: 4/24}) 
-            setTimeout(router.reload(), 5000)   
+            router.push('/tracks')
         }})        
     }})
 }
