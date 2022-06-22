@@ -11,8 +11,7 @@ export default function Layout({children}){
                     {children}
                     <Box height={300}></Box>
                 </main>                
-                <Footer/>
-            <MusicPlayer/>            
+                <Footer/>                      
         </>
     )
 }

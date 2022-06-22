@@ -60,6 +60,7 @@ export async function getServerSideProps({params})
 export default function PlaylistPage({playlist}){
 
     const tracks = playlist.track
+    console.log(tracks)
 
     const router = useRouter()
 
@@ -107,11 +108,6 @@ export default function PlaylistPage({playlist}){
                                                         router.push(`/user/${track.author}`)
                                                     }} fontSize={12} sx={{mt: '6px'}} color='primary.light'>{track.author}</Typography>
                                             </Box>
-                                            <Stack spacing={1} direction='row' alignItems='center' marginRight={4}>
-                                                <IconButton>
-                                                    <DeleteOutline />
-                                                </IconButton>
-                                            </Stack>
                                         </Stack>
                                     </Paper>
                                 </ListItem>

@@ -26,7 +26,6 @@ export default function MenuDrawer(){
         if(token){
             const decoded = jwt_decode(token)
             setUsername(decoded.data.username)
-            cookie.set('playlists', decoded.data.playlists, {expires: 2/24})
             dispatch(
                 login({
                 username: decoded.data.username,

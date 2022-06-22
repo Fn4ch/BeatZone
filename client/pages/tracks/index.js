@@ -10,6 +10,7 @@ import { trackList, trackIndex } from '../../src/features/playerSlice'
 import Player from '../../components/player'
 import AddTrackToPlaylist from '../../components/AddTrackToPlaylist'
 import { useRouter } from 'next/router'
+import MusicPlayer from '../../components/player'
 
 
 export async function getServerSideProps()
@@ -98,6 +99,7 @@ useEffect(()=>{
                         </List>
                     </Box>
                 </Container>
+                <MusicPlayer/>  
         </Layout>
     )
 }

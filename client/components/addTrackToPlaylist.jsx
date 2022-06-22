@@ -31,7 +31,7 @@ const AddTrackToPlaylist = (props) =>{
         console.log(currentUser)
         if(currentUser){
             const p = currentUser.playlists
-            setPlaylists(p.map(playlist => (<MenuItem key={playlist.id} id={playlist.id} onClick={()=>{addTrackHandler(playlist._id)}} >{playlist.title}</MenuItem>)))
+            setPlaylists(p.map(playlist => (<MenuItem key={playlist.id} id={playlist.id} onClick={()=>{addTrackHandler(playlist)}} >{playlist.title}</MenuItem>)))
         }
     },[currentUser])
 
@@ -45,7 +45,7 @@ const AddTrackToPlaylist = (props) =>{
     }
 
     const addTrackHandler = (playlist) => {
-       addTrackToPlaylist({variables: {trackId: props.id, playlistId : playlist}, onCompleted: (data)=>{
+       addTrackToPlaylist({variables: {trackId: props.id, playlistId : playlist._id}, onCompleted: (data)=>{
         handleClose()
         alert(`Трек добавлен в плейлист ${data.addTrackToPlaylist.title}`)
         console.log(data)

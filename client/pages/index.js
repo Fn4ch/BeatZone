@@ -4,14 +4,16 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import theme from '../src/theme'
 import { ThemeProvider } from '@mui/material'
-import { TextField, InputAdornment} from '@mui/material'
+import { Button } from '@mui/material'
 import { Search } from '@mui/icons-material'
 import Layout from '../components/Layout'
 import Image from 'next/image'
 import backImage from '../src/pictures/mountains.jpg'
+import {useRouter} from 'next/router'
 
 export default function Index(props) { 
     
+  const router = useRouter()
   
   return (
     <>
@@ -29,20 +31,14 @@ export default function Index(props) {
               <Box sx={{mt:5}}></Box>            
                 <Typography sx={{mt:10, ml:1}} align="left" variant='h1'>Место для</Typography>
                   <Box sx={{mx:"auto"}} maxWidth="sm">
-                    <TextField 
-                        sx={{my: 10, md: 10}}
+                    <Button
+                        sx={{my: 10, md: 10, paddingY: 1}}
                         variant='outlined'
-                        id="seach_field"
-                        label="Search"
                         color="secondary"                        
-                        fullWidth={true}
-                        InputProps={{
-                          startAdornment: (
-                              <InputAdornment position="start">
-                                <Search/>
-                              </InputAdornment>
-                          ),}}
-                    />
+                        fullWidth
+                        fontSize={40}
+                        onClick={()=>{router.push('/tracks')}}
+                    >Перейти к трекам</Button>
                   </Box>
                 <Typography align="right" sx={{mr:1}} variant='h1'>Музыки</Typography>              
             </Container>

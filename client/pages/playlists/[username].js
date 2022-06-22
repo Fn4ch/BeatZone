@@ -1,30 +1,29 @@
 import client from '../../components/client'
-import { gql, useMutation } from '@apollo/client'
-import { Container, Typography, Box, Paper, Button, Avatar, Grid, Dialog, DialogContent, DialogTitle, TextField, DialogContentText, Stack} from '@mui/material'
-import { Add } from '@mui/icons-material'
-import { useRouter } from 'next/router'
+import { gql } from '@apollo/client'
+import { Container, Typography, Box, Paper, Button, List, ListItem, Stack, IconButton} from '@mui/material'
+import { DeleteOutline } from '@mui/icons-material'
 import Layout from '../../components/Layout'
-import { useState } from 'react'
-import cookie  from 'js-cookie'
-import { useSelector } from 'react-redux'
-import { selectUser } from '../../src/features/userSlice'
+import Image from "next/image"
+import { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { useRouter } from 'next/router'
+import { trackList, trackIndex } from '../../src/features/playerSlice'
  
 
 export async function getServerSidePaths() {
 
     const { data } =  await client.query({
         query: gql`
-        query getAllUsers{
-            getAllUsers{
-                username  
-                playlists  
-            } 
+        query getPlaylists{
+            getPlaylists{
+                id
+            }
         }
         `    
     })
-    const users = data.getAllUsers
-    users.map(user => console.log(user))
-    const paths = users.map((user) => ({params: {username: user.username},}))
+    const playlists = data.getPlaylists.getPlaylists
+    console.log(playlists)
+    const paths = playlists.map((playlist) => ({params: {id: playlist.id},}))
     return{        
         paths,
         fallback: false
@@ -36,113 +35,72 @@ export async function getServerSideProps({params})
 
     const { data } =  await client.query({
         query: gql`
-        query getUserPlaylists($author: String){
-            getUserPlaylists(author: $author){
-                title 
-                id
-                author      
-            } 
-        }        
-        `, variables: {author: params.username}},)
+        query getPlaylist($id: String){
+            getPlaylist(id: $id){
+                title
+                track{
+                    id
+                    name
+                    audio
+                    image
+                    author
+                    description
+                }
+            }
+        }`, variables: {id: params.id}
+    })
 
     return{
         props: {
-            playlists : data.getUserPlaylists
+            playlist : data.getPlaylist
         }
     }
 }
 
-const ADD_PLAYLIST = gql`
-    mutation addPlaylist($author: String, $title: String){
-        addPlaylist(author: $author, title: $title){
-            title
-            author
-        }        
-    }
-`
-const LOGIN_USER_MUTATION = gql`
-    mutation loginUser($password: String, $email: String){
-      loginUser(password: $password, email: $email){
-        email
-        username
-        password
-        token
-        }
-    }
-`
+export default function PlaylistPage({playlist}){
+
+    const tracks = playlist.track
+    console.log(tracks, 'ppp')
+
+    const router = useRouter()
 
 
-const userTracksPage = ({playlists}) => {
-
-const [loginUser, {error, loading, data}] = useMutation(LOGIN_USER_MUTATION)
-const [addPlaylist] = useMutation(ADD_PLAYLIST)
-
-const [open, setOpen] = useState(false)
-const [title, setTitle] = useState()
-const currentUser = useSelector(selectUser)
-
-  const handleClickOpen = () => {
-    setOpen(true)
-  }
-
-  const handleClose = () => {
-    setOpen(false)
-  }
-
-const router = useRouter()
-const {username} = router.query
-
-const addPlaylistHandler = () =>{
-    addPlaylist({variables: {author: username, title: title}, onCompleted: ()=> {
-        loginUser({variables: {password: currentUser.password, email: currentUser.email}, onCompleted: (data) =>{        
-            cookie.set('auth-token', data.loginUser.token, {expires: 4/24}) 
-            setTimeout(router.reload(), 5000)   
-        }})        
-    }})
-}
-
-return(
-    <Layout>
-        <Typography marginTop={12} align="center" variant="h3">Мои плейлисты</Typography>
+    return(
+        <Layout>
+        <Typography marginTop={12} align="center" variant="h3">{playlist.title}</Typography>
             <Container width="lg" sx={{mt:8}}>
-                <Box width='100%' sx={{mx:'auto'}}>
-                    <Grid sx={{width: '100%'}} container margin={2} spacing={2} flexDirection='row'>                         
-                        <Grid item marginTop={0}>
-                            <Paper sx={{width: 200, height: 200, margin: 0}}>
-                                <Button onClick={handleClickOpen} margin={0} sx={{width: 200, height: 200}} alignSelf='center' justifyItems='center'>
-                                    <Add fontSize='large' color='secondary' sx={{width: 100, height: 100, sx:'auto', my: 'auto'}}/>  
-                                </Button>
-                            </Paper>  
-                        </Grid> 
-                            {playlists.map((playlist) => 
-                            (<Grid item onClick={()=>{
-                                router.push(`/playlist/${playlist.id}`)
-                            }} >
-                                <Avatar sx={{width: 200, height: 200}} className="avatar" variant='rounded'>{playlist.title}</Avatar>
-                            </Grid>))
-                            }   
-                    </Grid>
-                    <Dialog
-                    open={open}
-                    onClick={handleClose}
-                    fullWidth
-                    >
-                        <DialogTitle>Создание плейлиста</DialogTitle>
-                        <DialogContent>
-                            <Stack alignItems='center' justifyContent='center'>
-                                <DialogContentText justifySelf='center' sx={{mx: 3, my: 1}}>Введите название плейлиста</DialogContentText>                            
-                                <TextField onChange={(e)=>{
-                                    setTitle(e.target.value)                                    
-                                }} label='Название плейлиста' autoFocus fullWidth variant='outlined' color='secondary' sx={{my:3, mx: 5}}></TextField>                               
-                                <Button sx={{mx:'auto', width: 140}} variant='contained' color='secondary' onClick={addPlaylistHandler}>Добавить</Button>
-                            </Stack>
-                        </DialogContent>
-                    </Dialog>
+                <Box width='100%'>
+                    <List sx={{width: '100%'}}>
+                            {tracks.map((track, index) =>{
+                                return(
+                                <ListItem key={track.id}>
+                                <Paper sx={{width:'100%'}} color='secondary'>
+                                    <Stack direction='row' alignItems='center' justifyItems='flex-start' sx={{width: '100%'}} margin={1} marginBottom={0}>
+                                            <Box onClick={()=>{
+                                                setTrack(track)
+                                                setCurrentSongIndex(index)
+                                            }} key={track.id}>
+                                                <Image src={track.image} alt="Img" width="60" height="60"></Image>
+                                            </Box>
+                                            <Box flexDirection="row" alignSelf='center' marginLeft={3} flexGrow={1}>
+                                                    <Typography  fontSize={20} sx={{mb: '3px'}}>{track.name}</Typography>                                                    
+                                                    <Typography button onClick={()=>{
+                                                        router.push(`/user/${track.author}`)
+                                                    }} fontSize={12} sx={{mt: '6px'}} color='primary.light'>{track.author}</Typography>
+                                            </Box>
+                                            <Stack spacing={1} direction='row' alignItems='center' marginRight={4}>
+                                                <IconButton>
+                                                    <DeleteOutline />
+                                                </IconButton>
+                                            </Stack>
+                                        </Stack>
+                                    </Paper>
+                                </ListItem>
+                                )
+                            })}                       
+                    </List>
                 </Box>
         </Container>
     </Layout>
-)
+    )
 }
-
-export default userTracksPage
-

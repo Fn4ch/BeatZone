@@ -6,6 +6,7 @@ import { gql } from '@apollo/client'
 import Image from 'next/image'
 import { useState } from 'react'
 import {useRouter} from 'next/router'
+import MusicPlayer from '../../components/player'
 
 
 
@@ -96,6 +97,7 @@ return(
                     </List>
                 </Box>
         </Container>
+        <MusicPlayer/>
     </Layout>
 )
 }
